@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- 게임지표 길드 build v3.0 / external-script -->
+<!-- 게임지표 길드 build v3.1 / external-script -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -51,6 +51,16 @@ button,input{font:inherit}button{color:inherit}
 .choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.choice{border:1px solid var(--line);background:#23314d;border-radius:14px;
  padding:14px;text-align:left;font-weight:800;cursor:pointer;line-height:1.4}.choice:hover{background:#304263}.choice.correct{background:#087f5b;border-color:#34d399}.choice.wrong{background:#9f1239;border-color:#fb7185}
 .input-answer{display:flex;gap:8px}.input-answer input,.search{width:100%;border:1px solid var(--line);background:#0c1527;color:white;border-radius:14px;padding:14px;outline:none}
+.solve-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:start}
+.solve-grid.with-calculator{grid-template-columns:minmax(0,1fr) 270px}
+.calculator-panel[hidden]{display:none!important}.calculator-panel{background:#111c32;border:1px solid var(--line);border-radius:17px;padding:13px;position:sticky;top:90px}
+.calculator-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:13px;color:#bfdbfe;font-weight:900}
+.calc-history{height:18px;text-align:right;color:var(--muted);font-size:11px;overflow:hidden;white-space:nowrap}
+.calc-display{width:100%;border:1px solid var(--line);background:#07101f;color:#fff;border-radius:12px;padding:12px;text-align:right;font-size:22px;font-weight:900;margin:5px 0 10px}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.calc-key{border:1px solid var(--line);background:#23314d;border-radius:11px;padding:11px 4px;font-weight:900;cursor:pointer}
+.calc-key:active{transform:scale(.96)}.calc-key.op{background:#344568;color:#dbeafe}.calc-key.eq{background:#2563eb}.calc-copy{width:100%;margin-top:9px;border:0;border-radius:11px;padding:10px;background:#087f5b;color:white;font-weight:900;cursor:pointer}
+.calc-note{font-size:11px;color:var(--muted);line-height:1.4;margin-top:8px}
 .feedback{min-height:64px;color:#dbeafe;line-height:1.45;padding-top:12px}.damage{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);
  font-size:34px;font-weight:1000;pointer-events:none;animation:damage .8s ease forwards;z-index:20}@keyframes damage{0%{opacity:0;transform:translate(-50%,-20%)}30%{opacity:1;transform:translate(-50%,-70%)}100%{opacity:0;transform:translate(-50%,-130%)}}
 .tabs{display:flex;gap:7px;overflow:auto;padding-bottom:8px}.tab{border:1px solid var(--line);background:#1c2943;border-radius:999px;padding:9px 13px;white-space:nowrap;cursor:pointer;font-weight:850}.tab.active{background:#2563eb}
@@ -71,12 +81,13 @@ button,input{font:inherit}button{color:inherit}
 .volume-wrap input{width:70px;accent-color:#8b5cf6}
 .sound-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;background:rgba(10,18,34,.95);border:1px solid var(--line);padding:10px 14px;border-radius:999px;color:#dbeafe;font-size:13px;opacity:0;pointer-events:none;transition:.25s}
 .sound-toast.show{opacity:1;bottom:34px}
-@media(max-width:680px){
+@media(max-width:760px){
 
  .hero-grid{grid-template-columns:1fr}.avatar{display:none}.menu-grid,.cards,.formula-grid{grid-template-columns:1fr}
  .choices{grid-template-columns:1fr}.achievement-grid{grid-template-columns:repeat(2,1fr)}
  .battle-head{grid-template-columns:1fr auto 1fr}.fighter .face{font-size:45px}.app{padding-inline:11px}
  .topbar{margin-inline:-11px}.player-mini .hide-mobile{display:none}
+ .solve-grid.with-calculator{grid-template-columns:1fr}.calculator-panel{position:static}.input-answer{flex-direction:column}
 }
 </style>
 </head>
@@ -120,7 +131,7 @@ button,input{font:inherit}button{color:inherit}
   <button class="menu-card" data-mode="adventure"><span class="tag">추천</span><div class="icon">🗺️</div><h3>모험 던전</h3><p>기초 3문제·응용 5문제·심화 2문제를 섞은 균형 복습.</p></button>
   <button class="menu-card" data-mode="quick"><span class="tag">10문제</span><div class="icon">⚡</div><h3>속전속결</h3><p>기초 문제 10개로 빠르게 용어와 뜻을 확인.</p></button>
   <button class="menu-card" data-mode="boss"><span class="tag">고난도</span><div class="icon">🐉</div><h3>보스 레이드</h3><p>응용 4문제·심화 8문제로 계산과 판단을 집중 훈련.</p></button>
-  <button class="menu-card" data-mode="advanced"><span class="tag">15문제</span><div class="icon">🧠</div><h3>심화 시험</h3><p>검수된 심화 문제 15개. 역산·복합 계산·유사 개념 비교 중심.</p></button>
+  <button class="menu-card" data-mode="advanced"><span class="tag">15문제</span><div class="icon">🧠</div><h3>심화 시험</h3><p>검수된 심화 문제 15개. 계산 문제는 숫자가 바뀌며 옆 계산기를 사용할 수 있어.</p></button>
   <button class="menu-card" id="wrongDungeon"><span class="tag" id="wrongCount">오답 0개</span><div class="icon">🕳️</div><h3>오답 던전</h3><p>내가 틀린 용어만 집중적으로 다시 등장.</p></button>
   <button class="menu-card" id="openStudy"><span class="tag">전투 없음</span><div class="icon">🏛️</div><h3>지표 연구소</h3><p>도감, 플래시카드, 공식표를 편하게 공부.</p></button>
   <button class="menu-card" id="openProfile"><span class="tag">성장 기록</span><div class="icon">🏆</div><h3>길드 기록실</h3><p>레벨, 숙련도, 업적과 플레이 기록 확인.</p></button>
@@ -139,9 +150,27 @@ button,input{font:inherit}button{color:inherit}
   <div class="question-card">
    <div class="qtype" id="qType"></div>
    <div class="question" id="qText"></div>
-   <div id="answerArea"></div>
-   <div class="feedback" id="feedback"></div>
-   <button class="btn primary full" id="nextQuestion" style="display:none">다음 공격</button>
+   <div class="solve-grid" id="solveGrid">
+    <div class="solve-main">
+     <div id="answerArea"></div>
+     <div class="feedback" id="feedback"></div>
+     <button class="btn primary full" id="nextQuestion" style="display:none">다음 공격</button>
+    </div>
+    <aside class="calculator-panel" id="calculatorPanel" hidden aria-label="계산기">
+     <div class="calculator-title"><span>🧮 간단 계산기</span><span id="calcUnitHint">숫자를 계산해 봐</span></div>
+     <div class="calc-history" id="calcHistory"></div>
+     <input class="calc-display" id="calcDisplay" value="" placeholder="0" readonly aria-label="계산 결과">
+     <div class="calc-grid">
+      <button class="calc-key op" data-calc="C">C</button><button class="calc-key op" data-calc="BACK">⌫</button><button class="calc-key op" data-calc="%">%</button><button class="calc-key op" data-calc="÷">÷</button>
+      <button class="calc-key" data-calc="7">7</button><button class="calc-key" data-calc="8">8</button><button class="calc-key" data-calc="9">9</button><button class="calc-key op" data-calc="×">×</button>
+      <button class="calc-key" data-calc="4">4</button><button class="calc-key" data-calc="5">5</button><button class="calc-key" data-calc="6">6</button><button class="calc-key op" data-calc="−">−</button>
+      <button class="calc-key" data-calc="1">1</button><button class="calc-key" data-calc="2">2</button><button class="calc-key" data-calc="3">3</button><button class="calc-key op" data-calc="+">+</button>
+      <button class="calc-key" data-calc="0">0</button><button class="calc-key" data-calc="00">00</button><button class="calc-key" data-calc=".">.</button><button class="calc-key eq" data-calc="=">=</button>
+     </div>
+     <button class="calc-copy" id="copyCalcResult">결과를 정답칸에 넣기</button>
+     <div class="calc-note">퍼센트 계산 예: <b>500 × 4 %</b> → 20<br>문제에서 요구한 단위(원·만원·명·%)를 확인해.</div>
+    </aside>
+   </div>
   </div>
  </div>
 </section>
@@ -194,7 +223,7 @@ button,input{font:inherit}button{color:inherit}
 </section>
 </div>
 <footer class="site-footer">
-  <b>게임지표 길드 v3.0</b><br>
+  <b>게임지표 길드 v3.1</b><br>
   진행도와 소리 설정은 현재 브라우저에만 저장되며 서버로 전송되지 않습니다.
  </footer>
  <div id="soundToast" class="sound-toast">소리가 켜졌어</div>
@@ -204,7 +233,7 @@ button,input{font:inherit}button{color:inherit}
   이 학습 사이트는 자바스크립트가 필요합니다. Chrome 또는 Samsung Internet에서 열어 주세요.
  </div>
 </noscript>
-<script src="app.js?v=30" defer
+<script src="app.js?v=31" defer
  onerror="document.getElementById('fatalError').hidden=false"></script>
 </body>
 </html>

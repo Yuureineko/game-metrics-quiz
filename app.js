@@ -1,4 +1,4 @@
-/* 게임지표 길드 v3.0 */
+/* 게임지표 길드 v3.1 */
 (function(){
 "use strict";
 
@@ -249,12 +249,89 @@ document.querySelectorAll("[data-home]").forEach(b=>b.onclick=()=>showScreen("ho
 
 function termById(id){return TERMS.find(t=>t.id===id)}
 
+const CALC_VARIANT_IDS=new Set(["Q120","Q121","Q122","Q127","Q128","Q131","Q132","Q134","Q135","Q138","Q139","Q140","Q142","Q143","Q168","Q169","Q172"]);
+function randomItem(list){return list[Math.floor(Math.random()*list.length)]}
+function tidyNumber(value){
+ const rounded=Math.round(value*100)/100;
+ return Number.isInteger(rounded)?String(rounded):String(rounded).replace(/0+$/," ").trim().replace(/\.$/,"");
+}
+function numberWithCommas(value){return Number(value).toLocaleString("ko-KR")}
+function moneyAcceptFromMan(man){
+ const won=Math.round(man*10000);
+ return [tidyNumber(man),`${tidyNumber(man)}만원`,String(won),`${numberWithCommas(won)}원`];
+}
+function calculationVariant(original){
+ const q={...original,accept:(original.accept||[]).slice(),options:(original.options||[]).slice(),calculator:true,dynamic:true};
+ const id=q.id;
+ if(id==="Q120"){
+  const gross=randomItem([100,200,300,400,500,600,800,1000]),net=gross*.9*.7;
+  q.prompt=`Gross Sales가 ${numberWithCommas(gross)}만원이다. 부가세 10%를 먼저 제한 뒤 마켓 수수료 30%를 제한하면 Net Sales는?`;
+  q.answer=`${tidyNumber(net)}만원`;q.accept=moneyAcceptFromMan(net);q.explain=`${gross} × 0.9 × 0.7 = ${tidyNumber(net)}만원.`;
+ }else if(id==="Q121"){
+  const gross=randomItem([1000,2000,3000]),net=gross*.9*.7*.79;
+  q.prompt=`Gross Sales가 ${numberWithCommas(gross)}만원이다. 부가세 10%와 마켓 수수료 30%를 순서대로 제한한 뒤 채널링 수수료 21%를 추가로 제한하면?`;
+  q.answer=`${tidyNumber(net)}만원`;q.accept=moneyAcceptFromMan(net);q.explain=`${gross} × 0.9 × 0.7 × 0.79 = ${tidyNumber(net)}만원.`;
+ }else if(id==="Q122"){
+  const gross=randomItem([100,200,300,400,500,800,1000]),net=gross*.7;
+  q.prompt=`다른 공제 없이 플랫폼 수수료 30%만 제한한 Net Sales가 ${tidyNumber(net)}만원이라면 Gross Sales는?`;
+  q.answer=`${gross}만원`;q.accept=moneyAcceptFromMan(gross);q.explain=`Gross = ${tidyNumber(net)} ÷ 0.7 = ${gross}만원.`;
+ }else if(id==="Q127"||id==="Q128"){
+  const dau=randomItem([100,200,300,400,500,800,1000]),rate=randomItem([2,3,4,5,10,15,20]),pu=dau*rate/100;
+  if(id==="Q127"){
+   q.prompt=`DAU가 ${numberWithCommas(dau)}명이고 PU가 ${numberWithCommas(pu)}명이다. PUR은?`;q.answer=`${rate}%`;q.accept=[String(rate),String(rate/100),`${rate}%`];q.explain=`${pu} ÷ ${dau} × 100 = ${rate}%.`;
+  }else{
+   q.prompt=`DAU가 ${numberWithCommas(dau)}명이고 PUR이 ${rate}%다. PU는 몇 명인가?`;q.answer=`${numberWithCommas(pu)}명`;q.accept=[String(pu),`${pu}명`];q.explain=`${dau} × ${rate/100} = ${pu}명.`;
+  }
+ }else if(id==="Q131"||id==="Q132"){
+  const mau=randomItem([500,1000,2000,3000,4000]),rate=randomItem([5,10,15,20]),mpu=mau*rate/100;
+  if(id==="Q131"){
+   q.prompt=`MAU가 ${numberWithCommas(mau)}명이고 MPU가 ${numberWithCommas(mpu)}명이다. MPUR은?`;q.answer=`${rate}%`;q.accept=[String(rate),String(rate/100),`${rate}%`];q.explain=`${mpu} ÷ ${mau} × 100 = ${rate}%.`;
+  }else{
+   q.prompt=`MAU가 ${numberWithCommas(mau)}명이고 MPUR이 ${rate}%다. MPU는?`;q.answer=`${numberWithCommas(mpu)}명`;q.accept=[String(mpu),`${mpu}명`];q.explain=`${mau} × ${rate/100} = ${mpu}명.`;
+  }
+ }else if(id==="Q134"||id==="Q135"){
+  const arppu=randomItem([1,2,3,4,5]),pu=randomItem([10,20,25,30,40]),sales=arppu*pu;
+  if(id==="Q134"){
+   q.prompt=`오늘 Sales가 ${numberWithCommas(sales)}만원이고 PU가 ${pu}명이다. ARPPU는?`;q.answer=`${arppu}만원`;q.accept=moneyAcceptFromMan(arppu);q.explain=`${sales} ÷ ${pu} = ${arppu}만원.`;
+  }else{
+   q.prompt=`ARPPU가 ${arppu}만원이고 PU가 ${pu}명이다. Sales는?`;q.answer=`${numberWithCommas(sales)}만원`;q.accept=moneyAcceptFromMan(sales);q.explain=`${arppu} × ${pu} = ${sales}만원.`;
+  }
+ }else if(id==="Q138"){
+  const dau=randomItem([100,200,500,1000]),arpdau=randomItem([500,1000,1500,2000]),salesWon=dau*arpdau,salesMan=salesWon/10000;
+  q.prompt=`오늘 Sales가 ${tidyNumber(salesMan)}만원이고 DAU가 ${numberWithCommas(dau)}명이다. ARPDAU는?`;q.answer=`${numberWithCommas(arpdau)}원`;q.accept=[String(arpdau),`${arpdau}원`,`${numberWithCommas(arpdau)}원`];q.explain=`${numberWithCommas(salesWon)} ÷ ${dau} = ${numberWithCommas(arpdau)}원.`;
+ }else if(id==="Q139"){
+  const dau=randomItem([100,200,500,1000]),rate=randomItem([2,4,5,10]),arppu=randomItem([1,2,3,4]),pu=dau*rate/100,sales=pu*arppu;
+  q.prompt=`DAU ${numberWithCommas(dau)}명, PUR ${rate}%, ARPPU ${arppu}만원일 때 예상 일매출은?`;q.answer=`${tidyNumber(sales)}만원`;q.accept=moneyAcceptFromMan(sales);q.explain=`${dau} × ${rate/100} × ${arppu} = ${tidyNumber(sales)}만원.`;
+ }else if(id==="Q140"){
+  const mau=randomItem([500,1000,2000,3000]),rate=randomItem([5,10,15,20]),arppu=randomItem([1,2,3]),mpu=mau*rate/100,sales=mpu*arppu;
+  q.prompt=`MAU ${numberWithCommas(mau)}명, MPUR ${rate}%, ARPPU ${arppu}만원일 때 예상 월매출은?`;q.answer=`${numberWithCommas(sales)}만원`;q.accept=moneyAcceptFromMan(sales);q.explain=`${mau} × ${rate/100} × ${arppu} = ${numberWithCommas(sales)}만원.`;
+ }else if(id==="Q142"||id==="Q143"){
+  const base=randomItem([100,200,500,1000]),rate=randomItem(id==="Q142"?[20,30,40,50,60]:[10,15,20,25,30]),remain=base*rate/100;
+  const day=id==="Q142"?"D+1":"D+7";
+  q.prompt=`D-0 기준 유저 ${numberWithCommas(base)}명 중 ${day}에도 ${numberWithCommas(remain)}명이 접속했다. ${day} Retention은?`;q.answer=`${rate}%`;q.accept=[String(rate),String(rate/100),`${rate}%`];q.explain=`${remain} ÷ ${base} × 100 = ${rate}%.`;
+ }else if(id==="Q168"||id==="Q169"){
+  const users=randomItem([100,200,300,400,500]),cac=randomItem([1000,2000,3000,4000]),costWon=users*cac,costMan=costWon/10000;
+  if(id==="Q168"){
+   q.prompt=`마케팅비 ${tidyNumber(costMan)}만원으로 신규 유저 ${users}명을 확보했다. CAC는?`;q.answer=`${numberWithCommas(cac)}원`;q.accept=[String(cac),`${cac}원`,`${numberWithCommas(cac)}원`];q.explain=`${numberWithCommas(costWon)} ÷ ${users} = ${numberWithCommas(cac)}원.`;
+  }else{
+   q.prompt=`마케팅비 ${tidyNumber(costMan)}만원, CAC ${numberWithCommas(cac)}원이라면 확보한 신규 유저 수는?`;q.answer=`${users}명`;q.accept=[String(users),`${users}명`];q.explain=`${numberWithCommas(costWon)} ÷ ${numberWithCommas(cac)} = ${users}명.`;
+  }
+ }else if(id==="Q172"){
+  const net=randomItem([50,100,200,300,500]),share=randomItem([30,40,50]),developer=net*share/100;
+  q.prompt=`Net Sales ${net}만원을 개발사:퍼블리셔=${share}:${100-share}으로 나눈다. 개발사 몫은?`;q.answer=`${tidyNumber(developer)}만원`;q.accept=moneyAcceptFromMan(developer);q.explain=`${net} × ${share/100} = ${tidyNumber(developer)}만원.`;
+ }
+ q.kind=q.kind.replace("계산·","계산·랜덤 ");
+ q.placeholder="숫자와 단위를 입력";
+ return q;
+}
+
 function questionCopy(q){
+ const source=CALC_VARIANT_IDS.has(q.id)?calculationVariant(q):q;
  return {
-  id:q.id,kind:q.kind,difficulty:q.difficulty,prompt:q.prompt,answer:q.answer,
-  accept:(q.accept||[]).slice(),options:(q.options||[]).slice(),input:q.input,
-  placeholder:q.placeholder||"정답 입력",explain:q.explain,termId:q.termId,
-  sourcePage:q.sourcePage
+  id:source.id,kind:source.kind,difficulty:source.difficulty,prompt:source.prompt,answer:source.answer,
+  accept:(source.accept||[]).slice(),options:(source.options||[]).slice(),input:source.input,
+  placeholder:source.placeholder||"정답 입력",explain:source.explain,termId:source.termId,
+  sourcePage:source.sourcePage,calculator:!!source.calculator,dynamic:!!source.dynamic
  };
 }
 function pickDiverse(pool,count,usedIds){
@@ -310,16 +387,59 @@ $("wrongDungeon").onclick=()=>{
 };
 $("quitBattle").onclick=()=>{if(confirm("전투를 포기하고 길드로 돌아갈까?"))showScreen("home")};
 
+let calculatorExpression="";
+let calculatorResult="";
+function resetCalculator(){
+ calculatorExpression="";calculatorResult="";
+ if($("calcDisplay"))$("calcDisplay").value="";
+ if($("calcHistory"))$("calcHistory").textContent="";
+}
+function calculatorEvaluate(expression){
+ let safe=String(expression||"").replace(/×/g,"*").replace(/÷/g,"/").replace(/−/g,"-");
+ safe=safe.replace(/(\d+(?:\.\d+)?)%/g,"($1/100)");
+ if(!safe||!/^[0-9+\-*/().\s]+$/.test(safe))throw new Error("invalid expression");
+ const value=Function('"use strict";return ('+safe+')')();
+ if(!Number.isFinite(value))throw new Error("invalid result");
+ return Math.round(value*1000000)/1000000;
+}
+function calculatorPress(key){
+ if(key==="C"){resetCalculator();return}
+ if(key==="BACK"){
+  calculatorExpression=calculatorExpression.slice(0,-1);calculatorResult="";
+ }else if(key==="="){
+  try{
+   const before=calculatorExpression;
+   calculatorResult=String(calculatorEvaluate(calculatorExpression));
+   $("calcHistory").textContent=before+" =";
+   calculatorExpression=calculatorResult;
+  }catch(e){calculatorResult="오류";$("calcHistory").textContent="식을 다시 확인해"}
+ }else{
+  if(calculatorResult&&calculatorResult!=="오류"&&!/[+−×÷]/.test(key))calculatorExpression="";
+  calculatorResult="";calculatorExpression+=key;
+ }
+ $("calcDisplay").value=calculatorResult||calculatorExpression;
+}
+document.querySelectorAll("[data-calc]").forEach(button=>button.onclick=()=>calculatorPress(button.dataset.calc));
+if($("copyCalcResult"))$("copyCalcResult").onclick=()=>{
+ const target=$("answerInput"),value=$("calcDisplay").value;
+ if(!target||!value||value==="오류")return;
+ target.value=value;target.focus();
+};
+
 function renderBattle(){
  const q=battle.questions[battle.index];battle.answered=false;
  $("playerHpBar").style.width=`${battle.playerHp/battle.maxPlayer*100}%`;$("enemyHpBar").style.width=`${battle.enemyHp/battle.maxEnemy*100}%`;
  $("playerHpText").textContent=`${battle.playerHp}/${battle.maxPlayer}`;$("enemyHpText").textContent=`${battle.enemyHp}/${battle.maxEnemy}`;
  $("battleCombo").textContent=battle.combo;$("battleNumber").textContent=battle.index+1;$("battleScore").textContent=battle.score;
  $("qType").textContent=(battle.mode==="advanced"?"심화 시험 · ":"")+q.kind;$("qText").textContent=q.prompt;$("feedback").innerHTML="";$("nextQuestion").style.display="none";
+ const showCalc=!!q.calculator;
+ if($("copyCalcResult"))$("copyCalcResult").disabled=false;
+ $("calculatorPanel").hidden=!showCalc;$("solveGrid").classList.toggle("with-calculator",showCalc);resetCalculator();
+ if($("calcUnitHint"))$("calcUnitHint").textContent=showCalc?"문제 단위 확인":"숫자를 계산해 봐";
  const area=$("answerArea");area.innerHTML="";
  if(q.input){
   const wrap=document.createElement("div");wrap.className="input-answer";
-  const inp=document.createElement("input");inp.placeholder=q.placeholder||"정답 입력";inp.autocomplete="off";inp.autocapitalize="off";inp.spellcheck=false;
+  const inp=document.createElement("input");inp.id="answerInput";inp.inputMode=q.calculator?"decimal":"text";inp.placeholder=q.placeholder||"정답 입력";inp.autocomplete="off";inp.autocapitalize="off";inp.spellcheck=false;
   const btn=document.createElement("button");btn.className="btn primary";btn.textContent="공격";btn.onclick=()=>submitAnswer(inp.value,btn);
   inp.onkeydown=e=>{if(e.key==="Enter")btn.click()};wrap.append(inp,btn);area.append(wrap);setTimeout(()=>inp.focus(),50)
  }else{
@@ -344,7 +464,7 @@ function submitAnswer(value,button){
   const valueHasPercent=String(value).includes("%");
   return answerHasPercent!==valueHasPercent && (Math.abs(a*100-b)<1e-9||Math.abs(a-b*100)<1e-9);
  });
- document.querySelectorAll("#answerArea button,#answerArea input").forEach(x=>x.disabled=true);
+ document.querySelectorAll("#answerArea button,#answerArea input").forEach(x=>x.disabled=true);if($("copyCalcResult"))$("copyCalcResult").disabled=true;
  if(correct){
   AudioEngine.correct();setTimeout(()=>AudioEngine.attack(),120);
   battle.combo++;battle.correct++;const dmg=22+Math.min(16,battle.combo*3);battle.enemyHp=clamp(battle.enemyHp-dmg,0,battle.maxEnemy);
