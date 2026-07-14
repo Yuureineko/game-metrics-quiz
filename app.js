@@ -1,4 +1,4 @@
-/* 게임지표 길드 v3.1 */
+/* 게임지표 길드 v3.2 */
 (function(){
 "use strict";
 
@@ -448,15 +448,28 @@ function renderBattle(){
   area.append(choices)
  }
 }
-function submitAnswer(value,button){
- if(battle.answered)return;battle.answered=true;
- const q=battle.questions[battle.index];
+function answerUnit(value){
+ const text=String(value == null ? "" : value).replace(/\s/g,"").toLowerCase();
+ if(/%p|퍼센트포인트|%포인트/.test(text))return "PERCENT_POINT";
+ if(/%|퍼센트/.test(text))return "PERCENT";
+ if(/만원/.test(text))return "MANWON";
+ if(/원/.test(text))return "WON";
+ if(/명/.test(text))return "PERSON";
+ return "";
+}
+function isCorrectAnswer(q,value){
  const accepted=[q.answer,...(q.accept||[])];
+ const valueUnit=answerUnit(value),expectedUnit=answerUnit(q.answer);
+ if(valueUnit&&expectedUnit&&valueUnit!==expectedUnit){
+  const explicitEquivalent=accepted.some(answer=>answerUnit(answer)===valueUnit&&normalize(value)===normalize(answer));
+  if(!explicitEquivalent)return false;
+ }
+ if(accepted.some(answer=>normalize(value)===normalize(answer)))return true;
  const numericValue=String(value == null ? "" : value).replace(/,/g,"").match(/-?\d+(?:\.\d+)?/);
- const correct=accepted.some(answer=>{
-  if(normalize(value)===normalize(answer))return true;
+ if(!numericValue)return false;
+ return accepted.some(answer=>{
   const numericAnswer=String(answer == null ? "" : answer).replace(/,/g,"").match(/-?\d+(?:\.\d+)?/);
-  if(!numericValue||!numericAnswer)return false;
+  if(!numericAnswer)return false;
   const a=Number(numericValue[0]),b=Number(numericAnswer[0]);
   if(!Number.isFinite(a)||!Number.isFinite(b))return false;
   if(Math.abs(a-b)<1e-9)return true;
@@ -464,6 +477,11 @@ function submitAnswer(value,button){
   const valueHasPercent=String(value).includes("%");
   return answerHasPercent!==valueHasPercent && (Math.abs(a*100-b)<1e-9||Math.abs(a-b*100)<1e-9);
  });
+}
+function submitAnswer(value,button){
+ if(battle.answered)return;battle.answered=true;
+ const q=battle.questions[battle.index];
+ const correct=isCorrectAnswer(q,value);
  document.querySelectorAll("#answerArea button,#answerArea input").forEach(x=>x.disabled=true);if($("copyCalcResult"))$("copyCalcResult").disabled=true;
  if(correct){
   AudioEngine.correct();setTimeout(()=>AudioEngine.attack(),120);
