@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- 게임지표 길드 build v2.7 / external-script -->
+<!-- 게임지표 길드 build v3.0 / external-script -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -108,19 +108,19 @@ button,input{font:inherit}button{color:inherit}
    <div>
     <div class="pill" style="display:inline-block;margin-bottom:12px">현재 직급: <span id="rankName">인턴 분석가</span></div>
     <h1>공부 말고,<br>지표 던전 공략.</h1>
-    <p>용어를 외우고, 계산 문제를 풀고, 몬스터에게 피해를 줘서 성장하는 게임형 학습 사이트야.</p>
+    <p>수업 필기와 대조해 전수 검수한 177문제로 용어·공식·상황 판단을 연습하는 학습 사이트야.</p>
    </div>
    <div class="avatar" id="homeAvatar">🧙‍♂️</div>
   </div>
  </div>
 
- <div class="notice" style="margin-top:14px">🎵 첫 버튼을 누르면 BGM이 시작돼. 영어 직접입력은 대소문자·띄어쓰기·하이픈을 구분하지 않아.</div>
+ <div class="notice" style="margin-top:14px">✅ 수업 필기 기준 전수 검수 177문제 · 영어 입력은 대소문자·띄어쓰기·하이픈·슬래시를 구분하지 않아.</div>
  <div class="section-title"><h2>퀘스트 선택</h2><span id="homeProgress">도감 숙련도 0%</span></div>
  <div class="menu-grid">
-  <button class="menu-card" data-mode="adventure"><span class="tag">추천</span><div class="icon">🗺️</div><h3>모험 던전</h3><p>용어·뜻·OX·빈칸·상황형·계산형이 섞여 나오는 기본 전투.</p></button>
-  <button class="menu-card" data-mode="quick"><span class="tag">10문제</span><div class="icon">⚡</div><h3>속전속결</h3><p>빈칸 문제도 포함해 짧게 풀고 최고 콤보를 노리는 모드.</p></button>
-  <button class="menu-card" data-mode="boss"><span class="tag">고난도</span><div class="icon">🐉</div><h3>보스 레이드</h3><p>상황형과 계산형 중심. KPI 드래곤에게 도전.</p></button>
-  <button class="menu-card" data-mode="advanced"><span class="tag">15문제</span><div class="icon">🧠</div><h3>심화 시험</h3><p>역산·복합 계산·직접입력·유사 용어 비교. 75% 이상 정답 시 통과.</p></button>
+  <button class="menu-card" data-mode="adventure"><span class="tag">추천</span><div class="icon">🗺️</div><h3>모험 던전</h3><p>기초 3문제·응용 5문제·심화 2문제를 섞은 균형 복습.</p></button>
+  <button class="menu-card" data-mode="quick"><span class="tag">10문제</span><div class="icon">⚡</div><h3>속전속결</h3><p>기초 문제 10개로 빠르게 용어와 뜻을 확인.</p></button>
+  <button class="menu-card" data-mode="boss"><span class="tag">고난도</span><div class="icon">🐉</div><h3>보스 레이드</h3><p>응용 4문제·심화 8문제로 계산과 판단을 집중 훈련.</p></button>
+  <button class="menu-card" data-mode="advanced"><span class="tag">15문제</span><div class="icon">🧠</div><h3>심화 시험</h3><p>검수된 심화 문제 15개. 역산·복합 계산·유사 개념 비교 중심.</p></button>
   <button class="menu-card" id="wrongDungeon"><span class="tag" id="wrongCount">오답 0개</span><div class="icon">🕳️</div><h3>오답 던전</h3><p>내가 틀린 용어만 집중적으로 다시 등장.</p></button>
   <button class="menu-card" id="openStudy"><span class="tag">전투 없음</span><div class="icon">🏛️</div><h3>지표 연구소</h3><p>도감, 플래시카드, 공식표를 편하게 공부.</p></button>
   <button class="menu-card" id="openProfile"><span class="tag">성장 기록</span><div class="icon">🏆</div><h3>길드 기록실</h3><p>레벨, 숙련도, 업적과 플레이 기록 확인.</p></button>
@@ -194,7 +194,7 @@ button,input{font:inherit}button{color:inherit}
 </section>
 </div>
 <footer class="site-footer">
-  <b>게임지표 길드 v2.7</b><br>
+  <b>게임지표 길드 v3.0</b><br>
   진행도와 소리 설정은 현재 브라우저에만 저장되며 서버로 전송되지 않습니다.
  </footer>
  <div id="soundToast" class="sound-toast">소리가 켜졌어</div>
@@ -204,7 +204,7 @@ button,input{font:inherit}button{color:inherit}
   이 학습 사이트는 자바스크립트가 필요합니다. Chrome 또는 Samsung Internet에서 열어 주세요.
  </div>
 </noscript>
-<script src="app.js?v=27" defer
+<script src="app.js?v=30" defer
  onerror="document.getElementById('fatalError').hidden=false"></script>
 </body>
 </html>
