@@ -83,7 +83,7 @@ button,input{font:inherit}button{color:inherit}
 <div class="app">
 <header class="topbar">
  <div class="brandrow">
-  <div class="brand">⚔️ 게임지표 길드<small>용어를 익혀 KPI 드래곤을 쓰러뜨려라</small></div>
+  <div class="brand">⚔️ 게임지표 길드 <span style="font-size:10px;color:#86efac">v2.2 FIX</span><small>용어를 익혀 KPI 드래곤을 쓰러뜨려라</small></div>
   <div class="player-mini">
    <span class="pill">Lv.<span id="miniLevel">1</span></span>
    <span class="pill hide-mobile">🪙 <span id="miniGold">0</span></span>
@@ -197,6 +197,151 @@ const SCENARIOS=[{"type": "calc", "prompt": "오늘 DAU가 1,000명이고 PU가 
 const ENEMIES=[{"name": "이탈 슬라임", "emoji": "🟢", "desc": "유저를 게임 밖으로 밀어낸다."}, {"name": "과금 미믹", "emoji": "🎁", "desc": "PUR과 ARPPU를 뒤섞어 혼란을 준다."}, {"name": "동접 골렘", "emoji": "🗿", "desc": "CU와 MCU를 구분하지 못하게 만든다."}, {"name": "수수료 유령", "emoji": "👻", "desc": "Gross와 Net을 몰래 바꿔 놓는다."}, {"name": "KPI 드래곤", "emoji": "🐉", "desc": "모든 지표를 시험하는 최종 보스다."}];
 const ACHIEVEMENTS={"firstWin": {"name": "첫 던전 클리어", "icon": "🏅", "desc": "처음으로 전투에서 승리"}, "combo5": {"name": "집중력 폭발", "icon": "🔥", "desc": "5콤보 달성"}, "perfect": {"name": "무결점 분석가", "icon": "💎", "desc": "한 판을 오답 없이 클리어"}, "scholar": {"name": "도감 수집가", "icon": "📚", "desc": "학습실에서 카드 20개 열람"}, "boss": {"name": "KPI 정복자", "icon": "🐲", "desc": "보스전 승리"}, "level5": {"name": "주니어 게임기획자", "icon": "🎓", "desc": "레벨 5 달성"}};
 
+
+const SafeStore={
+ get(key,fallback=null){
+  try{
+   const value=window.localStorage.getItem(key);
+   return value===null?fallback:value;
+  }catch(e){return fallback}
+ },
+ set(key,value){
+  try{window.localStorage.setItem(key,value);return true}
+  catch(e){return false}
+ },
+ remove(key){
+  try{window.localStorage.removeItem(key);return true}
+  catch(e){return false}
+ }
+};
+
+/* 외부 음원 없이 브라우저가 직접 만드는 오리지널 칩튠 */
+const AudioEngine={
+ ctx:null,master:null,musicGain:null,sfxGain:null,
+ enabled:true,volume:.45,timer:null,step:0,mode:"home",
+ init(){
+  if(this.ctx)return true;
+  try{
+   const AC=window.AudioContext||window.webkitAudioContext;
+   if(!AC)return false;
+   this.ctx=new AC();
+   this.master=this.ctx.createGain();
+   this.musicGain=this.ctx.createGain();
+   this.sfxGain=this.ctx.createGain();
+   this.musicGain.gain.value=.18;
+   this.sfxGain.gain.value=.55;
+   this.musicGain.connect(this.master);
+   this.sfxGain.connect(this.master);
+   this.master.connect(this.ctx.destination);
+   this.master.gain.value=this.enabled?this.volume:0;
+   return true;
+  }catch(e){this.ctx=null;return false}
+ },
+ resume(){
+  try{
+   if(!this.init())return;
+   if(this.ctx.state==="suspended")this.ctx.resume().catch(()=>{});
+  }catch(e){}
+ },
+ setEnabled(value){
+  this.enabled=value;
+  SafeStore.set("gameMetricsSoundEnabled",value?"1":"0");
+  try{
+   this.resume();
+   if(this.master&&this.ctx)this.master.gain.setTargetAtTime(value?this.volume:0,this.ctx.currentTime,.03);
+  }catch(e){}
+  const button=document.getElementById("soundToggle");
+  if(button)button.textContent=value?"🔊":"🔇";
+  if(value)this.startMusic(this.mode);else this.stopMusic();
+ },
+ setVolume(value){
+  this.volume=Math.max(0,Math.min(1,value));
+  SafeStore.set("gameMetricsSoundVolume",String(this.volume));
+  try{
+   if(this.master&&this.ctx)this.master.gain.setTargetAtTime(this.enabled?this.volume:0,this.ctx.currentTime,.03);
+  }catch(e){}
+ },
+ tone(freq,dur=.1,type="square",gain=.1,delay=0,target="sfx"){
+  try{
+   if(!this.enabled)return;
+   this.resume();
+   if(!this.ctx)return;
+   const now=this.ctx.currentTime+delay;
+   const osc=this.ctx.createOscillator();
+   const amp=this.ctx.createGain();
+   osc.type=type;
+   osc.frequency.setValueAtTime(freq,now);
+   amp.gain.setValueAtTime(.0001,now);
+   amp.gain.exponentialRampToValueAtTime(Math.max(.0002,gain),now+.008);
+   amp.gain.exponentialRampToValueAtTime(.0001,now+dur);
+   osc.connect(amp);
+   amp.connect(target==="music"?this.musicGain:this.sfxGain);
+   osc.start(now);
+   osc.stop(now+dur+.03);
+  }catch(e){}
+ },
+ noise(dur=.07,gain=.09){
+  try{
+   if(!this.enabled)return;
+   this.resume();
+   if(!this.ctx)return;
+   const length=Math.floor(this.ctx.sampleRate*dur);
+   const buffer=this.ctx.createBuffer(1,length,this.ctx.sampleRate);
+   const data=buffer.getChannelData(0);
+   for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*(1-i/length);
+   const source=this.ctx.createBufferSource();
+   const amp=this.ctx.createGain();
+   source.buffer=buffer;
+   amp.gain.value=gain;
+   source.connect(amp);
+   amp.connect(this.sfxGain);
+   source.start();
+  }catch(e){}
+ },
+ click(){this.tone(520,.04,"square",.05)},
+ correct(){
+  this.tone(523.25,.08,"square",.10);
+  this.tone(659.25,.08,"square",.09,.07);
+  this.tone(783.99,.13,"square",.08,.14);
+ },
+ wrong(){
+  this.tone(220,.13,"sawtooth",.09);
+  this.tone(164.81,.2,"sawtooth",.08,.1);
+ },
+ attack(){this.noise(.05,.08);this.tone(150,.1,"square",.08)},
+ hurt(){this.noise(.1,.1);this.tone(120,.17,"sawtooth",.09)},
+ victory(){[523.25,659.25,783.99,1046.5].forEach((f,i)=>this.tone(f,.16,"square",.09,i*.1))},
+ defeat(){[392,329.63,261.63,196].forEach((f,i)=>this.tone(f,.2,"triangle",.09,i*.13))},
+ levelUp(){[523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>this.tone(f,.14,"square",.08,i*.08))},
+ stopMusic(){
+  if(this.timer){clearInterval(this.timer);this.timer=null}
+ },
+ startMusic(mode="home"){
+  this.mode=mode;
+  if(!this.enabled)return;
+  this.resume();
+  if(!this.ctx)return;
+  this.stopMusic();
+  this.step=0;
+  const sets={
+   home:[261.63,392,329.63,440,349.23,523.25,392,329.63],
+   battle:[261.63,329.63,392,523.25,392,329.63,293.66,392],
+   boss:[146.83,174.61,220,146.83,196,233.08,174.61,130.81]
+  };
+  const seq=sets[mode]||sets.battle;
+  const interval=mode==="boss"?220:310;
+  const play=()=>{
+   const i=this.step%seq.length;
+   const f=seq[i];
+   this.tone(f,mode==="boss"?.16:.22,mode==="boss"?"sawtooth":"triangle",mode==="boss"?.04:.03,0,"music");
+   if(i%2===0)this.tone(f/2,.1,"square",.018,0,"music");
+   this.step++;
+  };
+  play();
+  this.timer=setInterval(play,interval);
+ }
+};
+
 const $=id=>document.getElementById(id);
 const shuffle=a=>[...a].sort(()=>Math.random()-.5);
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
@@ -205,13 +350,13 @@ const SAVE_KEY="gameMetricsGuildV2";
 const defaultPlayer={level:1,xp:0,gold:0,wins:0,bossWins:0,bestCombo:0,studyViews:0,mastery:{},mistakes:[],achievements:[],lastMode:"adventure"};
 let player=loadPlayer();
 let battle=null,flashIndex=0,flashFlipped=false,studyTab="glossary";
-AudioEngine.enabled=localStorage.getItem("gameMetricsSoundEnabled")!=="0";
-AudioEngine.volume=Number(localStorage.getItem("gameMetricsSoundVolume")||".45");
+AudioEngine.enabled=SafeStore.get("gameMetricsSoundEnabled","1")!=="0";
+AudioEngine.volume=Number(SafeStore.get("gameMetricsSoundVolume",".45")||".45");
 
 function loadPlayer(){
- try{return {...defaultPlayer,...JSON.parse(localStorage.getItem(SAVE_KEY)||"{}")}}catch(e){return {...defaultPlayer}}
+ try{return {...defaultPlayer,...JSON.parse(SafeStore.get(SAVE_KEY,"{}")||"{}")}}catch(e){return {...defaultPlayer}}
 }
-function savePlayer(){localStorage.setItem(SAVE_KEY,JSON.stringify(player));updateHeader()}
+function savePlayer(){SafeStore.set(SAVE_KEY,JSON.stringify(player));updateHeader()}
 function xpNeed(level){return 100+level*40}
 function rankFor(level){
  if(level>=10)return["수석 게임사업가","🧙‍♀️"];
@@ -342,13 +487,14 @@ function submitAnswer(value,button){
   $("feedback").innerHTML=`❌ 정답은 <b>${q.answer}</b><br>${q.explain}<br><span style="color:#fda4af">플레이어가 피해를 입었다.</span>`;
   popDamage("-20","#fda4af");
  }
- player.bestCombo=Math.max(player.bestCombo,battle.combo);savePlayer();
+ player.bestCombo=Math.max(player.bestCombo,battle.combo);
  $("playerHpBar").style.width=`${battle.playerHp}%`;$("enemyHpBar").style.width=`${battle.enemyHp/battle.maxEnemy*100}%`;
  $("playerHpText").textContent=`${battle.playerHp}/${battle.maxPlayer}`;$("enemyHpText").textContent=`${battle.enemyHp}/${battle.maxEnemy}`;
  $("battleCombo").textContent=battle.combo;$("battleScore").textContent=battle.score;
- $("nextQuestion").style.display="block";
  const done=battle.playerHp<=0||battle.enemyHp<=0||battle.index>=battle.questions.length-1;
  $("nextQuestion").textContent=done?"전투 결과 보기":"다음 공격";
+ $("nextQuestion").style.display="block";
+ try{savePlayer()}catch(e){};
 }
 function popDamage(text,color){
  const d=document.createElement("div");d.className="damage";d.textContent=text;d.style.color=color;document.body.append(d);setTimeout(()=>d.remove(),850)
@@ -416,20 +562,20 @@ function renderProfile(){
  const weak=TERMS.map(t=>({...t,m:masteryPercent(t.id),r:masteryRecord(t.id)})).sort((a,b)=>(a.m-b.m)||((b.r.wrong)-(a.r.wrong))).slice(0,6);
  $("weakTerms").innerHTML=weak.map(t=>`<article class="term-card"><h3>${t.term}</h3><p>${t.meaning}</p><div class="mastery"><div style="width:${t.m}%"></div></div><small>숙련도 ${t.m}%</small></article>`).join("")
 }
-$("resetSave").onclick=()=>{if(confirm("레벨, 오답, 업적을 모두 초기화할까?")){localStorage.removeItem(SAVE_KEY);player={...defaultPlayer,mastery:{},mistakes:[],achievements:[]};updateHeader();showScreen("home")}};
+$("resetSave").onclick=()=>{if(confirm("레벨, 오답, 업적을 모두 초기화할까?")){SafeStore.remove(SAVE_KEY);player={...defaultPlayer,mastery:{},mistakes:[],achievements:[]};updateHeader();showScreen("home")}};
 
 
 function showSoundToast(text){
  const t=$("soundToast");t.textContent=text;t.classList.add("show");clearTimeout(showSoundToast.timer);
  showSoundToast.timer=setTimeout(()=>t.classList.remove("show"),1300)
 }
-$("soundToggle").textContent=AudioEngine.enabled?"🔊":"🔇";
-$("volumeSlider").value=Math.round(AudioEngine.volume*100);
-$("soundToggle").onclick=e=>{
+if($("soundToggle"))$("soundToggle").textContent=AudioEngine.enabled?"🔊":"🔇";
+if($("volumeSlider"))$("volumeSlider").value=Math.round(AudioEngine.volume*100);
+if($("soundToggle"))$("soundToggle").onclick=e=>{
  e.stopPropagation();AudioEngine.setEnabled(!AudioEngine.enabled);
  showSoundToast(AudioEngine.enabled?"BGM과 효과음이 켜졌어":"소리를 껐어");
 };
-$("volumeSlider").oninput=e=>AudioEngine.setVolume(Number(e.target.value)/100);
+if($("volumeSlider"))$("volumeSlider").oninput=e=>AudioEngine.setVolume(Number(e.target.value)/100);
 document.addEventListener("pointerdown",e=>{
  AudioEngine.resume();
  if(AudioEngine.enabled&&!AudioEngine.timer)AudioEngine.startMusic("home");
