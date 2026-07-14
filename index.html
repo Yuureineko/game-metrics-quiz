@@ -63,7 +63,15 @@ button,input{font:inherit}button{color:inherit}
 .result{text-align:center;padding:25px}.result .big{font-size:75px}.result h2{font-size:30px;margin:8px}.reward{display:flex;justify-content:center;gap:10px;margin:15px}.reward .pill{font-size:15px}
 .notice{background:#182641;border-left:4px solid var(--blue);border-radius:10px;padding:11px 13px;color:#d6e4fa;font-size:14px;line-height:1.45}
 .empty{text-align:center;padding:35px;color:var(--muted)}
+
+.audio-controls{display:flex;align-items:center;gap:7px}
+.sound-btn{border:1px solid var(--line);background:#1b2944;border-radius:999px;padding:7px 10px;cursor:pointer;font-weight:900}
+.volume-wrap{display:flex;align-items:center;gap:6px;background:#131f36;border:1px solid var(--line);border-radius:999px;padding:5px 8px}
+.volume-wrap input{width:70px;accent-color:#8b5cf6}
+.sound-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;background:rgba(10,18,34,.95);border:1px solid var(--line);padding:10px 14px;border-radius:999px;color:#dbeafe;font-size:13px;opacity:0;pointer-events:none;transition:.25s}
+.sound-toast.show{opacity:1;bottom:34px}
 @media(max-width:680px){
+
  .hero-grid{grid-template-columns:1fr}.avatar{display:none}.menu-grid,.cards,.formula-grid{grid-template-columns:1fr}
  .choices{grid-template-columns:1fr}.achievement-grid{grid-template-columns:repeat(2,1fr)}
  .battle-head{grid-template-columns:1fr auto 1fr}.fighter .face{font-size:45px}.app{padding-inline:11px}
@@ -79,6 +87,12 @@ button,input{font:inherit}button{color:inherit}
   <div class="player-mini">
    <span class="pill">Lv.<span id="miniLevel">1</span></span>
    <span class="pill hide-mobile">🪙 <span id="miniGold">0</span></span>
+   <div class="audio-controls">
+    <button class="sound-btn" id="soundToggle" aria-label="소리 켜기 또는 끄기">🔊</button>
+    <label class="volume-wrap hide-mobile" title="음량">
+      <span>🎚️</span><input id="volumeSlider" type="range" min="0" max="100" value="45">
+    </label>
+   </div>
   </div>
  </div>
  <div class="xpbar"><div id="miniXp"></div></div>
@@ -96,6 +110,7 @@ button,input{font:inherit}button{color:inherit}
   </div>
  </div>
 
+ <div class="notice" style="margin-top:14px">🎵 첫 버튼을 누르면 BGM이 시작돼. 우측 상단 🔊 버튼으로 음소거할 수 있어. 보스전에서는 음악도 달라져.</div>
  <div class="section-title"><h2>퀘스트 선택</h2><span id="homeProgress">도감 숙련도 0%</span></div>
  <div class="menu-grid">
   <button class="menu-card" data-mode="adventure"><span class="tag">추천</span><div class="icon">🗺️</div><h3>모험 던전</h3><p>용어·OX·상황형·계산형이 섞여 나오는 기본 전투.</p></button>
@@ -173,6 +188,7 @@ button,input{font:inherit}button{color:inherit}
  </div>
 </section>
 </div>
+<div id="soundToast" class="sound-toast">소리가 켜졌어</div>
 
 <script>
 const TERMS=[{"id": "DAU", "term": "DAU", "full": "Daily Active Users", "meaning": "하루 동안 게임에 접속한 중복되지 않은 이용자 수", "category": "이용자"}, {"id": "MAU", "term": "MAU", "full": "Monthly Active Users", "meaning": "한 달 동안 게임에 접속한 중복되지 않은 이용자 수", "category": "이용자"}, {"id": "NRU", "term": "NRU", "full": "New Registered Users", "meaning": "새로 가입하거나 게임을 처음 시작한 신규 유저 수", "category": "이용자"}, {"id": "PU", "term": "PU", "full": "Paying User", "meaning": "하루 동안 결제한 중복되지 않은 유저 수", "category": "결제"}, {"id": "NPU", "term": "NPU", "full": "New Paying User", "meaning": "게임에서 처음으로 결제한 유저 수", "category": "결제"}, {"id": "MPU", "term": "MPU", "full": "Monthly Paying User", "meaning": "한 달 동안 결제한 중복되지 않은 유저 수", "category": "결제"}, {"id": "PUR", "term": "PUR", "full": "Paying User Rate", "meaning": "DAU 중 결제한 유저의 비율", "category": "결제"}, {"id": "MPUR", "term": "MPUR", "full": "Monthly Paying User Rate", "meaning": "MAU 중 한 달 동안 결제한 유저의 비율", "category": "결제"}, {"id": "ARPPU", "term": "ARPPU", "full": "Average Revenue Per Paying User", "meaning": "결제 유저 1명당 평균 결제 금액", "category": "매출"}, {"id": "ARPDAU", "term": "ARPDAU", "full": "Average Revenue Per Daily Active User", "meaning": "하루 이용자 1명당 평균 매출", "category": "매출"}, {"id": "GROSS", "term": "Gross Sales", "full": "Gross Sales", "meaning": "수수료와 세금 등을 빼기 전 게임이 발생시킨 총매출", "category": "매출"}, {"id": "NET", "term": "Net Sales", "full": "Net Sales", "meaning": "세금과 마켓·플랫폼 수수료 등을 제외한 순매출", "category": "매출"}, {"id": "RET", "term": "Retention", "full": "Retention", "meaning": "특정 시점에 들어온 유저가 며칠 뒤에도 다시 접속하는 비율", "category": "잔존·마케팅"}, {"id": "ORG", "term": "Organic", "full": "Organic User", "meaning": "광고나 마케팅 없이 자연스럽게 유입된 유저", "category": "잔존·마케팅"}, {"id": "NONORG", "term": "Non-Organic", "full": "Non-Organic User", "meaning": "광고나 마케팅을 통해 유입된 유저", "category": "잔존·마케팅"}, {"id": "CU", "term": "CU", "full": "Concurrent User", "meaning": "현재 같은 시간에 접속해 있는 동시접속자 수", "category": "운영"}, {"id": "MCU", "term": "MCU", "full": "Maximum Concurrent User", "meaning": "일정 기간 동안 기록한 최고 동시접속자 수", "category": "운영"}, {"id": "UV", "term": "UV", "full": "Unique Visit", "meaning": "한 번 이상 방문한 중복되지 않은 순방문자 수", "category": "이용자"}, {"id": "TS", "term": "TS", "full": "Time Spent", "meaning": "유저가 게임에 접속해 플레이한 이용시간", "category": "운영"}, {"id": "KPI", "term": "KPI", "full": "Key Performance Indicator", "meaning": "목표 달성 여부를 판단하는 핵심 성과 지표", "category": "사업"}, {"id": "LTV", "term": "LTV", "full": "Life Time Value", "meaning": "유저 1명이 완전히 이탈할 때까지 만들어 내는 가치", "category": "잔존·마케팅"}, {"id": "PLC", "term": "PLC", "full": "Product Life Cycle", "meaning": "게임이나 제품이 성장하고 쇠퇴하기까지의 수명주기", "category": "사업"}, {"id": "BEP", "term": "BEP", "full": "Break Even Point", "meaning": "누적 비용과 누적 수익이 같아지는 손익분기점", "category": "사업"}, {"id": "ROI", "term": "ROI", "full": "Return On Investment", "meaning": "투자한 금액 대비 얻은 이익의 비율", "category": "사업"}, {"id": "CAC", "term": "CAC/UAC", "full": "Customer/User Acquisition Cost", "meaning": "유저 1명을 새로 확보하는 데 필요한 비용", "category": "잔존·마케팅"}, {"id": "CRC", "term": "CRC", "full": "Customer Retention Cost", "meaning": "기존 유저 1명을 유지하는 데 필요한 비용", "category": "잔존·마케팅"}, {"id": "RS", "term": "RS", "full": "Revenue Share", "meaning": "개발사와 퍼블리셔 사이의 수익 분배 비율", "category": "계약"}, {"id": "LF", "term": "LF", "full": "License Fee", "meaning": "퍼블리셔가 판권을 받으며 개발사에 지급하는 계약금", "category": "계약"}, {"id": "MG", "term": "MG", "full": "Minimum Guarantee", "meaning": "개발사의 최소 수익 보장을 위해 퍼블리셔가 미리 지급하는 금액", "category": "계약"}, {"id": "MOU", "term": "MOU", "full": "Memorandum of Understanding", "meaning": "정식 계약 전에 협력 방향을 정리한 양해각서", "category": "계약"}];
@@ -189,6 +205,8 @@ const SAVE_KEY="gameMetricsGuildV2";
 const defaultPlayer={level:1,xp:0,gold:0,wins:0,bossWins:0,bestCombo:0,studyViews:0,mastery:{},mistakes:[],achievements:[],lastMode:"adventure"};
 let player=loadPlayer();
 let battle=null,flashIndex=0,flashFlipped=false,studyTab="glossary";
+AudioEngine.enabled=localStorage.getItem("gameMetricsSoundEnabled")!=="0";
+AudioEngine.volume=Number(localStorage.getItem("gameMetricsSoundVolume")||".45");
 
 function loadPlayer(){
  try{return {...defaultPlayer,...JSON.parse(localStorage.getItem(SAVE_KEY)||"{}")}}catch(e){return {...defaultPlayer}}
@@ -228,7 +246,8 @@ function recordAnswer(id,correct){
 }
 function showScreen(id){
  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active");scrollTo({top:0,behavior:"smooth"})
- if(id==="home")updateHeader();
+ if(id==="home"){updateHeader();AudioEngine.startMusic("home")}
+ else if(id==="study"||id==="profile")AudioEngine.startMusic("home");
 }
 document.querySelectorAll("[data-home]").forEach(b=>b.onclick=()=>showScreen("home"));
 
@@ -277,7 +296,7 @@ function startBattle(mode){
  const maxEnemy=mode==="boss"?220:mode==="wrong"?130:150;
  battle={mode,enemy,questions:buildQuestions(mode),index:0,playerHp:100,maxPlayer:100,enemyHp:maxEnemy,maxEnemy,combo:0,score:0,correct:0,wrong:0,answered:false};
  $("playerFace").textContent=rankFor(player.level)[1];$("enemyFace").textContent=enemy.emoji;$("enemyName").textContent=enemy.name;
- $("battleTotal").textContent=battle.questions.length;showScreen("battle");renderBattle();
+ $("battleTotal").textContent=battle.questions.length;showScreen("battle");AudioEngine.startMusic(mode==="boss"?"boss":"battle");renderBattle();
 }
 document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>startBattle(b.dataset.mode));
 $("wrongDungeon").onclick=()=>{
@@ -309,12 +328,14 @@ function submitAnswer(value,button){
  const q=battle.questions[battle.index],correct=normalize(value)===normalize(q.answer);
  document.querySelectorAll("#answerArea button,#answerArea input").forEach(x=>x.disabled=true);
  if(correct){
+  AudioEngine.correct();setTimeout(()=>AudioEngine.attack(),120);
   battle.combo++;battle.correct++;const dmg=22+Math.min(16,battle.combo*3);battle.enemyHp=clamp(battle.enemyHp-dmg,0,battle.maxEnemy);
   battle.score+=100+battle.combo*20;button?.classList.add("correct");recordAnswer(q.termId,true);
   $("feedback").innerHTML=`✅ <b>정답!</b> ${q.explain}<br><span style="color:#86efac">적에게 ${dmg} 피해 · ${battle.combo}콤보</span>`;
   popDamage(`-${dmg}`,"#86efac");
   if(battle.combo>=5)unlock("combo5");
  }else{
+  AudioEngine.wrong();setTimeout(()=>AudioEngine.hurt(),100);
   battle.combo=0;battle.wrong++;battle.playerHp=clamp(battle.playerHp-(battle.mode==="boss"?24:20),0,battle.maxPlayer);
   button?.classList.add("wrong");recordAnswer(q.termId,false);
   [...document.querySelectorAll("#answerArea .choice")].find(x=>normalize(x.textContent)===normalize(q.answer))?.classList.add("correct");
@@ -344,6 +365,9 @@ function finishBattle(){
  if(won&&battle.wrong===0)unlock("perfect",newly);
  if(won&&battle.mode==="boss"){player.bossWins++;unlock("boss",newly)}
  if(player.level>=5)unlock("level5",newly);savePlayer();
+ AudioEngine.stopMusic();
+ if(won)AudioEngine.victory();else AudioEngine.defeat();
+ if(leveled)setTimeout(()=>AudioEngine.levelUp(),650);
  $("resultIcon").textContent=won?"🏆":"🛡️";$("resultTitle").textContent=won?"던전 클리어!":"퇴각했지만 경험은 남았다";
  $("resultDesc").textContent=`정답 ${battle.correct}개 · 오답 ${battle.wrong}개 · 최고 콤보 ${player.bestCombo}${leveled?" · 레벨 업!":""}`;
  $("rewardXp").textContent=xp;$("rewardGold").textContent=gold;
@@ -393,6 +417,24 @@ function renderProfile(){
  $("weakTerms").innerHTML=weak.map(t=>`<article class="term-card"><h3>${t.term}</h3><p>${t.meaning}</p><div class="mastery"><div style="width:${t.m}%"></div></div><small>숙련도 ${t.m}%</small></article>`).join("")
 }
 $("resetSave").onclick=()=>{if(confirm("레벨, 오답, 업적을 모두 초기화할까?")){localStorage.removeItem(SAVE_KEY);player={...defaultPlayer,mastery:{},mistakes:[],achievements:[]};updateHeader();showScreen("home")}};
+
+
+function showSoundToast(text){
+ const t=$("soundToast");t.textContent=text;t.classList.add("show");clearTimeout(showSoundToast.timer);
+ showSoundToast.timer=setTimeout(()=>t.classList.remove("show"),1300)
+}
+$("soundToggle").textContent=AudioEngine.enabled?"🔊":"🔇";
+$("volumeSlider").value=Math.round(AudioEngine.volume*100);
+$("soundToggle").onclick=e=>{
+ e.stopPropagation();AudioEngine.setEnabled(!AudioEngine.enabled);
+ showSoundToast(AudioEngine.enabled?"BGM과 효과음이 켜졌어":"소리를 껐어");
+};
+$("volumeSlider").oninput=e=>AudioEngine.setVolume(Number(e.target.value)/100);
+document.addEventListener("pointerdown",e=>{
+ AudioEngine.resume();
+ if(AudioEngine.enabled&&!AudioEngine.timer)AudioEngine.startMusic("home");
+ if(e.target.closest("button")&&!e.target.closest("#soundToggle"))AudioEngine.click();
+},{once:false});
 
 updateHeader();
 </script>
