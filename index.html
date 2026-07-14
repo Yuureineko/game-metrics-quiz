@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- 게임지표 길드 build v3.2 / external-script -->
+<!-- 게임지표 길드 build v4.0 / external-script -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -10,104 +10,53 @@
 :root{
  --bg:#080d18;--panel:#111a2e;--panel2:#17233d;--line:rgba(255,255,255,.1);
  --text:#f8fafc;--muted:#9fb0ce;--blue:#60a5fa;--purple:#a78bfa;
- --green:#34d399;--red:#fb7185;--gold:#fbbf24;--cyan:#22d3ee;
+ --green:#34d399;--red:#fb7185;--gold:#fbbf24;--cyan:#22d3ee;--qscale:1;
 }
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:
  radial-gradient(circle at 20% 0%,rgba(96,165,250,.18),transparent 28%),
  radial-gradient(circle at 90% 10%,rgba(167,139,250,.16),transparent 30%),
  linear-gradient(180deg,#0b1120,var(--bg));color:var(--text);
  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input{font:inherit}button{color:inherit}
-.app{width:min(980px,100%);margin:auto;padding:16px 14px 42px}
-.topbar{position:sticky;top:0;z-index:10;margin:-16px -14px 18px;padding:12px 14px;
- background:rgba(8,13,24,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-weight:950;font-size:20px;letter-spacing:-.4px}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:700}
-.player-mini{display:flex;gap:8px;align-items:center;font-size:13px}.pill{background:var(--panel2);border:1px solid var(--line);
- padding:7px 10px;border-radius:999px;font-weight:850;white-space:nowrap}
-.xpbar{height:7px;background:#202b45;border-radius:99px;overflow:hidden;margin-top:10px}.xpbar>div{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));transition:.4s}
+button,input,select{font:inherit}button{color:inherit}.app{width:min(1040px,100%);margin:auto;padding:16px 14px 112px}
+.topbar{position:sticky;top:0;z-index:20;margin:-16px -14px 18px;padding:12px 14px;background:rgba(8,13,24,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:950;font-size:20px;letter-spacing:-.4px}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:700}
+.player-mini{display:flex;gap:8px;align-items:center;font-size:13px}.pill{background:var(--panel2);border:1px solid var(--line);padding:7px 10px;border-radius:999px;font-weight:850;white-space:nowrap}
+.icon-btn{border:1px solid var(--line);background:#1b2944;border-radius:999px;padding:8px 10px;cursor:pointer;font-weight:900}.xpbar{height:7px;background:#202b45;border-radius:99px;overflow:hidden;margin-top:10px}.xpbar>div{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));transition:.4s}
 .screen{display:none}.screen.active{display:block;animation:fade .22s ease}@keyframes fade{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}
-.hero{padding:24px;border-radius:24px;background:linear-gradient(135deg,rgba(37,99,235,.28),rgba(124,58,237,.24));
- border:1px solid rgba(147,197,253,.25);box-shadow:0 20px 70px rgba(0,0,0,.24)}
-.hero h1{font-size:clamp(29px,7vw,52px);line-height:1.02;margin:0 0 10px;letter-spacing:-1.5px}
-.hero p{color:#c8d5ed;margin:0;line-height:1.6}.hero-grid{display:grid;grid-template-columns:1.4fr .8fr;gap:16px;align-items:center}
-.avatar{text-align:center;font-size:90px;filter:drop-shadow(0 12px 20px rgba(0,0,0,.35))}
+.hero{padding:24px;border-radius:24px;background:linear-gradient(135deg,rgba(37,99,235,.28),rgba(124,58,237,.24));border:1px solid rgba(147,197,253,.25);box-shadow:0 20px 70px rgba(0,0,0,.24)}
+.hero h1{font-size:clamp(29px,7vw,52px);line-height:1.02;margin:0 0 10px;letter-spacing:-1.5px}.hero p{color:#c8d5ed;margin:0;line-height:1.6}.hero-grid{display:grid;grid-template-columns:1.4fr .8fr;gap:16px;align-items:center}.avatar{text-align:center;font-size:90px;filter:drop-shadow(0 12px 20px rgba(0,0,0,.35))}
+.quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.quick-stat{background:rgba(7,16,31,.45);border:1px solid var(--line);border-radius:14px;padding:11px;text-align:center}.quick-stat b{display:block;font-size:20px}.quick-stat small{color:var(--muted)}
 .section-title{display:flex;justify-content:space-between;align-items:end;margin:25px 2px 12px}.section-title h2{margin:0;font-size:22px}.section-title span{color:var(--muted);font-size:13px}
-.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.menu-card{border:1px solid var(--line);background:linear-gradient(145deg,var(--panel),#0d1629);
- border-radius:20px;padding:18px;text-align:left;cursor:pointer;min-height:145px;transition:.18s;position:relative;overflow:hidden}
-.menu-card:hover,.menu-card:active{transform:translateY(-3px);border-color:rgba(96,165,250,.55)}
-.menu-card .icon{font-size:38px}.menu-card h3{font-size:19px;margin:10px 0 5px}.menu-card p{color:var(--muted);font-size:14px;line-height:1.45;margin:0}
-.menu-card .tag{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.08);font-size:11px;padding:5px 8px;border-radius:99px}
-.panel{background:rgba(17,26,46,.93);border:1px solid var(--line);border-radius:22px;padding:18px}
-.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:900;cursor:pointer;background:#273552;text-align:center}
-.btn.primary{background:linear-gradient(90deg,#2563eb,#7c3aed)}.btn.good{background:#087f5b}.btn.danger{background:#9f1239}
-.btn.full{width:100%}.btn:disabled{opacity:.55;cursor:default}.btnrow{display:flex;gap:9px;flex-wrap:wrap}.back{background:transparent;border:1px solid var(--line);padding:9px 12px;border-radius:12px;cursor:pointer;margin-bottom:12px}
-.battle-head{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}.fighter{text-align:center}.fighter .face{font-size:58px}.fighter b{display:block;margin-top:5px}
-.vs{font-weight:1000;color:var(--gold);font-size:23px}.hp{height:12px;background:#202b45;border-radius:99px;overflow:hidden;margin-top:8px}.hp>div{height:100%;transition:.35s}
-.hp.player>div{background:linear-gradient(90deg,#10b981,#34d399)}.hp.enemy>div{background:linear-gradient(90deg,#e11d48,#fb7185)}
-.battle-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:14px 2px}
-.question-card{background:#0b1428;border:1px solid var(--line);border-radius:20px;padding:20px}.qtype{color:var(--cyan);font-size:12px;font-weight:900}
-.question{font-size:clamp(20px,5vw,29px);font-weight:900;line-height:1.35;margin:10px 0 18px}
-.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.choice{border:1px solid var(--line);background:#23314d;border-radius:14px;
- padding:14px;text-align:left;font-weight:800;cursor:pointer;line-height:1.4}.choice:hover{background:#304263}.choice.correct{background:#087f5b;border-color:#34d399}.choice.wrong{background:#9f1239;border-color:#fb7185}
-.input-answer{display:flex;gap:8px}.input-answer input,.search{width:100%;border:1px solid var(--line);background:#0c1527;color:white;border-radius:14px;padding:14px;outline:none}
-.solve-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:start}
-.solve-grid.with-calculator{grid-template-columns:minmax(0,1fr) 270px}
-.calculator-panel[hidden]{display:none!important}.calculator-panel{background:#111c32;border:1px solid var(--line);border-radius:17px;padding:13px;position:sticky;top:90px}
-.calculator-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:13px;color:#bfdbfe;font-weight:900}
-.calc-history{height:18px;text-align:right;color:var(--muted);font-size:11px;overflow:hidden;white-space:nowrap}
-.calc-display{width:100%;border:1px solid var(--line);background:#07101f;color:#fff;border-radius:12px;padding:12px;text-align:right;font-size:22px;font-weight:900;margin:5px 0 10px}
-.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.calc-key{border:1px solid var(--line);background:#23314d;border-radius:11px;padding:11px 4px;font-weight:900;cursor:pointer}
-.calc-key:active{transform:scale(.96)}.calc-key.op{background:#344568;color:#dbeafe}.calc-key.eq{background:#2563eb}.calc-copy{width:100%;margin-top:9px;border:0;border-radius:11px;padding:10px;background:#087f5b;color:white;font-weight:900;cursor:pointer}
-.calc-note{font-size:11px;color:var(--muted);line-height:1.4;margin-top:8px}
-.feedback{min-height:64px;color:#dbeafe;line-height:1.45;padding-top:12px}.damage{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);
- font-size:34px;font-weight:1000;pointer-events:none;animation:damage .8s ease forwards;z-index:20}@keyframes damage{0%{opacity:0;transform:translate(-50%,-20%)}30%{opacity:1;transform:translate(-50%,-70%)}100%{opacity:0;transform:translate(-50%,-130%)}}
-.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:8px}.tab{border:1px solid var(--line);background:#1c2943;border-radius:999px;padding:9px 13px;white-space:nowrap;cursor:pointer;font-weight:850}.tab.active{background:#2563eb}
-.study-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin:12px 0}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.term-card{background:#111c32;border:1px solid var(--line);border-radius:17px;padding:15px;cursor:pointer;min-height:130px}
-.term-card h3{margin:0 0 4px;font-size:21px}.term-card small{color:#93c5fd}.term-card p{color:#ccd7ea;font-size:14px;line-height:1.45}.mastery{height:6px;background:#26334e;border-radius:99px;overflow:hidden}.mastery div{height:100%;background:linear-gradient(90deg,var(--blue),var(--green))}
-.flash-wrap{min-height:330px;display:grid;place-items:center}.flashcard{width:min(560px,100%);min-height:260px;border-radius:24px;border:1px solid var(--line);
- background:linear-gradient(145deg,#15233e,#0b1325);padding:26px;display:flex;flex-direction:column;justify-content:center;text-align:center;cursor:pointer;box-shadow:0 20px 55px rgba(0,0,0,.25)}
-.flashcard .front{font-size:42px;font-weight:1000}.flashcard .flash-back{font-size:21px;line-height:1.55}.flashcard .hint{color:var(--muted);font-size:13px;margin-top:20px}
-.formula-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.formula{background:#111c32;border:1px solid var(--line);border-radius:17px;padding:16px}.formula code{display:block;color:#fef3c7;font-size:16px;margin:8px 0}.formula p{color:var(--muted);font-size:13px}
-.achievement-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.ach{background:#111c32;border:1px solid var(--line);border-radius:15px;padding:13px;text-align:center;opacity:.35}.ach.unlocked{opacity:1;border-color:rgba(251,191,36,.55)}.ach .aicon{font-size:30px}.ach b{display:block;font-size:13px}.ach small{color:var(--muted)}
-.result{text-align:center;padding:25px}.result .big{font-size:75px}.result h2{font-size:30px;margin:8px}.reward{display:flex;justify-content:center;gap:10px;margin:15px}.reward .pill{font-size:15px}
-.notice{background:#182641;border-left:4px solid var(--blue);border-radius:10px;padding:11px 13px;color:#d6e4fa;font-size:14px;line-height:1.45}
-.empty{text-align:center;padding:35px;color:var(--muted)}.hard-note{margin:0 0 12px;color:#fde68a;font-size:13px;font-weight:800}.site-footer{text-align:center;color:var(--muted);font-size:12px;line-height:1.55;padding:28px 8px 4px}
-
-.audio-controls{display:flex;align-items:center;gap:7px}
-.sound-btn{border:1px solid var(--line);background:#1b2944;border-radius:999px;padding:7px 10px;cursor:pointer;font-weight:900}
-.volume-wrap{display:flex;align-items:center;gap:6px;background:#131f36;border:1px solid var(--line);border-radius:999px;padding:5px 8px}
-.volume-wrap input{width:70px;accent-color:#8b5cf6}
-.sound-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;background:rgba(10,18,34,.95);border:1px solid var(--line);padding:10px 14px;border-radius:999px;color:#dbeafe;font-size:13px;opacity:0;pointer-events:none;transition:.25s}
-.sound-toast.show{opacity:1;bottom:34px}
+.chapter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.chapter-card{border:1px solid var(--line);background:linear-gradient(145deg,#13203a,#0c1528);border-radius:20px;padding:18px;text-align:left;cursor:pointer;min-height:168px;position:relative}.chapter-card:hover:not(:disabled){transform:translateY(-2px);border-color:rgba(96,165,250,.55)}.chapter-card:disabled{cursor:not-allowed;opacity:.48}.chapter-icon{font-size:34px}.chapter-card h3{margin:8px 0 5px}.chapter-card p{color:var(--muted);font-size:13px;line-height:1.5}.chapter-status{display:flex;justify-content:space-between;gap:8px;margin-top:12px;color:#dbeafe;font-size:12px;font-weight:800}.progress{height:7px;background:#202b45;border-radius:99px;overflow:hidden;margin-top:7px}.progress>div{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transition:.35s}.lock-tag{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.08);padding:5px 8px;border-radius:99px;font-size:11px}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.menu-card{border:1px solid var(--line);background:linear-gradient(145deg,var(--panel),#0d1629);border-radius:20px;padding:18px;text-align:left;cursor:pointer;min-height:142px;transition:.18s;position:relative;overflow:hidden}.menu-card:hover,.menu-card:active{transform:translateY(-3px);border-color:rgba(96,165,250,.55)}.menu-card:disabled{opacity:.45;cursor:not-allowed;transform:none}.menu-card .icon{font-size:38px}.menu-card h3{font-size:19px;margin:10px 0 5px}.menu-card p{color:var(--muted);font-size:14px;line-height:1.45;margin:0}.menu-card .tag{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.08);font-size:11px;padding:5px 8px;border-radius:99px}
+.panel{background:rgba(17,26,46,.93);border:1px solid var(--line);border-radius:22px;padding:18px}.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:900;cursor:pointer;background:#273552;text-align:center}.btn.primary{background:linear-gradient(90deg,#2563eb,#7c3aed)}.btn.good{background:#087f5b}.btn.danger{background:#9f1239}.btn.outline{background:transparent;border:1px solid var(--line)}.btn.full{width:100%}.btn:disabled{opacity:.55;cursor:default}.btnrow{display:flex;gap:9px;flex-wrap:wrap}.back{background:transparent;border:1px solid var(--line);padding:9px 12px;border-radius:12px;cursor:pointer;margin-bottom:12px}
+.battle-head{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}.fighter{text-align:center}.fighter .face{font-size:58px;transition:.2s}.fighter b{display:block;margin-top:5px}.vs{font-weight:1000;color:var(--gold);font-size:23px}.hp{height:12px;background:#202b45;border-radius:99px;overflow:hidden;margin-top:8px}.hp>div{height:100%;transition:.35s}.hp.player>div{background:linear-gradient(90deg,#10b981,#34d399)}.hp.enemy>div{background:linear-gradient(90deg,#e11d48,#fb7185)}.battle-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:14px 2px}
+.question-card{background:#0b1428;border:1px solid var(--line);border-radius:20px;padding:20px}.qtop{display:flex;justify-content:space-between;align-items:center;gap:10px}.qtype{color:var(--cyan);font-size:12px;font-weight:900}.question{font-size:calc(clamp(20px,5vw,29px) * var(--qscale));font-weight:900;line-height:1.35;margin:10px 0 14px}.formula-hint{background:#17233d;border:1px dashed rgba(96,165,250,.5);padding:11px 13px;border-radius:12px;color:#dbeafe;margin-bottom:12px;line-height:1.5}.formula-hint[hidden]{display:none!important}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.choice{border:1px solid var(--line);background:#23314d;border-radius:14px;padding:14px;text-align:left;font-weight:800;cursor:pointer;line-height:1.4;min-height:52px}.choice:hover{background:#304263}.choice.correct{background:#087f5b;border-color:#34d399}.choice.wrong{background:#9f1239;border-color:#fb7185}
+.input-answer{display:flex;gap:8px}.input-answer input,.search,.setting-select{width:100%;border:1px solid var(--line);background:#0c1527;color:white;border-radius:14px;padding:14px;outline:none}.unit-bar{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.unit-chip{border:1px solid var(--line);background:#1d2b47;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:850;font-size:13px}
+.solve-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:start}.solve-grid.with-calculator{grid-template-columns:minmax(0,1fr) 280px}.calculator-panel[hidden]{display:none!important}.calculator-panel{background:#111c32;border:1px solid var(--line);border-radius:17px;padding:13px;position:sticky;top:90px}.calculator-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:13px;color:#bfdbfe;font-weight:900}.calc-collapse{border:0;background:transparent;cursor:pointer;color:#bfdbfe}.calculator-panel.collapsed .calc-body{display:none}.calc-history{height:18px;text-align:right;color:var(--muted);font-size:11px;overflow:hidden;white-space:nowrap}.calc-display{width:100%;border:1px solid var(--line);background:#07101f;color:#fff;border-radius:12px;padding:12px;text-align:right;font-size:22px;font-weight:900;margin:5px 0 10px}.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.calc-key{border:1px solid var(--line);background:#23314d;border-radius:11px;padding:11px 4px;font-weight:900;cursor:pointer}.calc-key:active{transform:scale(.96)}.calc-key.op{background:#344568;color:#dbeafe}.calc-key.eq{background:#2563eb}.calc-copy{width:100%;margin-top:9px;border:0;border-radius:11px;padding:10px;background:#087f5b;color:white;font-weight:900;cursor:pointer}.calc-note{font-size:11px;color:var(--muted);line-height:1.4;margin-top:8px}
+.feedback{min-height:64px;color:#dbeafe;line-height:1.5;padding-top:12px}.answer-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}.answer-box{background:#121f38;border:1px solid var(--line);border-radius:12px;padding:10px}.answer-box small{display:block;color:var(--muted);margin-bottom:3px}.solution-steps{background:#0f2a25;border-left:4px solid var(--green);border-radius:10px;padding:10px 12px;margin-top:9px}.solution-steps b{color:#a7f3d0}.retry-note{background:#32251a;border-left:4px solid var(--gold);border-radius:10px;padding:9px 11px;margin-top:9px;color:#fde68a}.damage{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);font-size:34px;font-weight:1000;pointer-events:none;animation:damage .8s ease forwards;z-index:30}@keyframes damage{0%{opacity:0;transform:translate(-50%,-20%)}30%{opacity:1;transform:translate(-50%,-70%)}100%{opacity:0;transform:translate(-50%,-130%)}}
+.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:8px}.tab{border:1px solid var(--line);background:#1c2943;border-radius:999px;padding:9px 13px;white-space:nowrap;cursor:pointer;font-weight:850}.tab.active{background:#2563eb}.study-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin:12px 0}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.term-card{background:#111c32;border:1px solid var(--line);border-radius:17px;padding:15px;cursor:pointer;min-height:130px}.term-card h3{margin:0 0 4px;font-size:21px}.term-card small{color:#93c5fd}.term-card p{color:#ccd7ea;font-size:14px;line-height:1.45}.mastery{height:6px;background:#26334e;border-radius:99px;overflow:hidden}.mastery div{height:100%;background:linear-gradient(90deg,var(--blue),var(--green))}.flash-wrap{min-height:330px;display:grid;place-items:center}.flashcard{width:min(560px,100%);min-height:260px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(145deg,#15233e,#0b1325);padding:26px;display:flex;flex-direction:column;justify-content:center;text-align:center;cursor:pointer;box-shadow:0 20px 55px rgba(0,0,0,.25)}.flashcard .front{font-size:42px;font-weight:1000}.flashcard .flash-back{font-size:21px;line-height:1.55}.flashcard .hint{color:var(--muted);font-size:13px;margin-top:20px}.formula-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.formula{background:#111c32;border:1px solid var(--line);border-radius:17px;padding:16px}.formula code{display:block;color:#fef3c7;font-size:16px;margin:8px 0}.formula p{color:var(--muted);font-size:13px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.stat-card{background:#111c32;border:1px solid var(--line);border-radius:15px;padding:14px;text-align:center}.stat-card b{display:block;font-size:25px}.stat-card small{color:var(--muted)}.category-list,.history-list{display:grid;gap:9px}.category-row{background:#111c32;border:1px solid var(--line);border-radius:14px;padding:12px}.category-head{display:flex;justify-content:space-between;gap:10px;font-size:13px}.history-item{background:#111c32;border:1px solid var(--line);border-radius:14px;padding:12px}.history-item b{display:block}.history-item small{color:var(--muted)}.achievement-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.ach{background:#111c32;border:1px solid var(--line);border-radius:15px;padding:13px;text-align:center;opacity:.35}.ach.unlocked{opacity:1;border-color:rgba(251,191,36,.55)}.ach .aicon{font-size:30px}.ach b{display:block;font-size:13px}.ach small{color:var(--muted)}
+.settings-grid{display:grid;gap:10px}.setting-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px;background:#111c32;border:1px solid var(--line);border-radius:15px;padding:14px}.setting-row p{margin:3px 0 0;color:var(--muted);font-size:13px}.switch{width:50px;height:28px;position:relative}.switch input{display:none}.switch span{position:absolute;inset:0;background:#334155;border-radius:99px;cursor:pointer}.switch span:after{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s}.switch input:checked+span{background:#2563eb}.switch input:checked+span:after{transform:translateX(22px)}
+.result{text-align:center;padding:25px}.result .big{font-size:75px}.result h2{font-size:30px;margin:8px}.reward{display:flex;justify-content:center;gap:10px;margin:15px}.reward .pill{font-size:15px}.notice{background:#182641;border-left:4px solid var(--blue);border-radius:10px;padding:11px 13px;color:#d6e4fa;font-size:14px;line-height:1.45}.empty{text-align:center;padding:35px;color:var(--muted)}.hard-note{margin:0 0 12px;color:#fde68a;font-size:13px;font-weight:800}.site-footer{text-align:center;color:var(--muted);font-size:12px;line-height:1.55;padding:28px 8px 4px}
+.audio-controls{display:flex;align-items:center;gap:7px}.sound-btn{border:1px solid var(--line);background:#1b2944;border-radius:999px;padding:7px 10px;cursor:pointer;font-weight:900}.volume-wrap{display:flex;align-items:center;gap:6px;background:#131f36;border:1px solid var(--line);border-radius:999px;padding:5px 8px}.volume-wrap input{width:70px;accent-color:#8b5cf6}.sound-toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);z-index:40;background:rgba(10,18,34,.96);border:1px solid var(--line);padding:10px 14px;border-radius:999px;color:#dbeafe;font-size:13px;opacity:0;pointer-events:none;transition:.25s}.sound-toast.show{opacity:1;bottom:98px}
+.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(1040px,100%);z-index:25;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(8,13,24,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:7px max(8px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom))}.nav-btn{border:0;background:transparent;color:var(--muted);padding:7px 3px;cursor:pointer;font-weight:800;font-size:11px}.nav-btn span{display:block;font-size:22px;margin-bottom:2px}.nav-btn.active{color:#93c5fd}
 @media(max-width:760px){
-
- .hero-grid{grid-template-columns:1fr}.avatar{display:none}.menu-grid,.cards,.formula-grid{grid-template-columns:1fr}
- .choices{grid-template-columns:1fr}.achievement-grid{grid-template-columns:repeat(2,1fr)}
- .battle-head{grid-template-columns:1fr auto 1fr}.fighter .face{font-size:45px}.app{padding-inline:11px}
- .topbar{margin-inline:-11px}.player-mini .hide-mobile{display:none}
- .solve-grid.with-calculator{grid-template-columns:1fr}.calculator-panel{position:static}.input-answer{flex-direction:column}
+ .hero-grid{grid-template-columns:1fr}.avatar{display:none}.menu-grid,.cards,.formula-grid,.chapter-grid{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.achievement-grid{grid-template-columns:repeat(2,1fr)}.stat-grid{grid-template-columns:repeat(2,1fr)}.quick-stats{grid-template-columns:repeat(3,1fr)}.battle-head{grid-template-columns:1fr auto 1fr}.fighter .face{font-size:45px}.app{padding-inline:11px}.topbar{margin-inline:-11px}.player-mini .hide-mobile{display:none}.solve-grid.with-calculator{grid-template-columns:1fr}.calculator-panel{position:static}.input-answer{flex-direction:column}.choice,.btn,.unit-chip{min-height:48px}#nextQuestion{position:sticky;bottom:78px;z-index:12;box-shadow:0 10px 30px rgba(0,0,0,.35)}.answer-compare{grid-template-columns:1fr}.question-card{padding:15px}
 }
 </style>
 </head>
 <body>
-<div id="fatalError" hidden style="position:fixed;left:10px;right:10px;top:10px;z-index:9999;background:#7f1d1d;color:white;padding:12px;border-radius:12px;font:14px/1.45 system-ui">
- 게임을 불러오지 못했습니다. Chrome 또는 Samsung Internet에서 새로고침해 주세요.
-</div>
+<div id="fatalError" hidden style="position:fixed;left:10px;right:10px;top:10px;z-index:9999;background:#7f1d1d;color:white;padding:12px;border-radius:12px;font:14px/1.45 system-ui">게임을 불러오지 못했습니다. Chrome 또는 Samsung Internet에서 새로고침해 주세요.</div>
 <div class="app">
 <header class="topbar">
  <div class="brandrow">
-  <div class="brand">⚔️ 게임지표 길드<small>용어를 익혀 KPI 드래곤을 쓰러뜨려라</small></div>
+  <div class="brand">⚔️ 게임지표 길드<small>챕터를 클리어해 KPI 드래곤을 쓰러뜨려라</small></div>
   <div class="player-mini">
-   <span class="pill">Lv.<span id="miniLevel">1</span></span>
-   <span class="pill hide-mobile">🪙 <span id="miniGold">0</span></span>
-   <div class="audio-controls">
-    <button class="sound-btn" id="soundToggle" aria-label="소리 켜기 또는 끄기">🔊</button>
-    <label class="volume-wrap hide-mobile" title="음량">
-      <span>🎚️</span><input id="volumeSlider" aria-label="음량 조절" type="range" min="0" max="100" value="45">
-    </label>
-   </div>
+   <span class="pill">Lv.<span id="miniLevel">1</span></span><span class="pill hide-mobile">🪙 <span id="miniGold">0</span></span>
+   <div class="audio-controls"><button class="sound-btn" id="soundToggle" aria-label="소리 켜기 또는 끄기">🔊</button><label class="volume-wrap hide-mobile"><span>🎚️</span><input id="volumeSlider" aria-label="음량 조절" type="range" min="0" max="100" value="45"></label></div>
+   <button class="icon-btn" id="openSettingsTop" aria-label="설정">⚙️</button>
   </div>
  </div>
  <div class="xpbar"><div id="miniXp"></div></div>
@@ -115,125 +64,83 @@ button,input{font:inherit}button{color:inherit}
 
 <section id="home" class="screen active">
  <div class="hero">
-  <div class="hero-grid">
-   <div>
-    <div class="pill" style="display:inline-block;margin-bottom:12px">현재 직급: <span id="rankName">인턴 분석가</span></div>
-    <h1>공부 말고,<br>지표 던전 공략.</h1>
-    <p>수업 필기와 대조해 전수 검수한 177문제로 용어·공식·상황 판단을 연습하는 학습 사이트야.</p>
-   </div>
-   <div class="avatar" id="homeAvatar">🧙‍♂️</div>
-  </div>
+  <div class="hero-grid"><div><div class="pill" style="display:inline-block;margin-bottom:12px">현재 직급: <span id="rankName">인턴 분석가</span></div><h1>외우고,<br>풀고, 다시 맞힌다.</h1><p>전수 검수 문제은행과 자동 재출제로 틀린 개념을 같은 판 안에서 다시 잡는 게임형 학습 사이트야.</p></div><div class="avatar" id="homeAvatar">🧙‍♂️</div></div>
+  <div class="quick-stats"><div class="quick-stat"><b id="streakHome">0일</b><small>연속 학습</small></div><div class="quick-stat"><b id="todayHome">0문제</b><small>오늘 풀이</small></div><div class="quick-stat"><b id="overallHome">0%</b><small>전체 정답률</small></div></div>
  </div>
-
- <div class="notice" style="margin-top:14px">✅ 수업 필기 기준 전수 검수 177문제 · 영어 입력은 대소문자·띄어쓰기·하이픈·슬래시를 구분하지 않아.</div>
- <div class="section-title"><h2>퀘스트 선택</h2><span id="homeProgress">도감 숙련도 0%</span></div>
+ <div class="notice" style="margin-top:14px">✅ 수업 필기 기준 177문제 · 계산 문제 숫자 랜덤 변형 · 오답은 3~4문제 뒤 변형 재출제.</div>
+ <div class="section-title"><h2>챕터 진행</h2><span id="homeProgress">도감 숙련도 0%</span></div>
+ <div class="chapter-grid">
+  <button class="chapter-card" data-chapter="1"><span class="lock-tag" id="chapterLock1">OPEN</span><div class="chapter-icon">🧭</div><h3>1장 기본 이용자 지표</h3><p>DAU, NRU, PU, NPU, MPU, CU, MCU, UV, TS</p><div class="chapter-status"><span id="chapterStatus1">미도전</span><span id="chapterScore1">0%</span></div><div class="progress"><div id="chapterProgress1"></div></div></button>
+  <button class="chapter-card" data-chapter="2"><span class="lock-tag" id="chapterLock2">LOCK</span><div class="chapter-icon">💰</div><h3>2장 매출·결제 지표</h3><p>Gross, Net Sales, PUR, MPUR, ARPPU, ARPDAU</p><div class="chapter-status"><span id="chapterStatus2">1장 70% 필요</span><span id="chapterScore2">0%</span></div><div class="progress"><div id="chapterProgress2"></div></div></button>
+  <button class="chapter-card" data-chapter="3"><span class="lock-tag" id="chapterLock3">LOCK</span><div class="chapter-icon">📣</div><h3>3장 잔존·마케팅</h3><p>Retention, Organic, LTV, CAC/UAC, UA, CRC</p><div class="chapter-status"><span id="chapterStatus3">2장 70% 필요</span><span id="chapterScore3">0%</span></div><div class="progress"><div id="chapterProgress3"></div></div></button>
+  <button class="chapter-card" data-chapter="4"><span class="lock-tag" id="chapterLock4">LOCK</span><div class="chapter-icon">📜</div><h3>4장 사업·계약</h3><p>KPI, PLC, BEP, ROI, RS, LF, MG, MOU</p><div class="chapter-status"><span id="chapterStatus4">3장 70% 필요</span><span id="chapterScore4">0%</span></div><div class="progress"><div id="chapterProgress4"></div></div></button>
+ </div>
+ <button class="menu-card" id="graduationMode" style="width:100%;margin-top:12px;min-height:118px"><span class="tag" id="graduationTag">LOCK</span><div class="icon">🏰</div><h3>최종 KPI 성채</h3><p>4개 챕터를 모두 70% 이상 통과하면 열리는 15문제 종합 시험.</p></button>
+ <div class="section-title"><h2>자유 훈련</h2><span>필요한 부분만 골라 연습</span></div>
  <div class="menu-grid">
-  <button class="menu-card" data-mode="adventure"><span class="tag">추천</span><div class="icon">🗺️</div><h3>모험 던전</h3><p>기초 3문제·응용 5문제·심화 2문제를 섞은 균형 복습.</p></button>
-  <button class="menu-card" data-mode="quick"><span class="tag">10문제</span><div class="icon">⚡</div><h3>속전속결</h3><p>기초 문제 10개로 빠르게 용어와 뜻을 확인.</p></button>
-  <button class="menu-card" data-mode="boss"><span class="tag">고난도</span><div class="icon">🐉</div><h3>보스 레이드</h3><p>응용 4문제·심화 8문제로 계산과 판단을 집중 훈련.</p></button>
-  <button class="menu-card" data-mode="advanced"><span class="tag">15문제</span><div class="icon">🧠</div><h3>심화 시험</h3><p>검수된 심화 문제 15개. 계산 문제는 숫자가 바뀌며 옆 계산기를 사용할 수 있어.</p></button>
-  <button class="menu-card" id="wrongDungeon"><span class="tag" id="wrongCount">오답 0개</span><div class="icon">🕳️</div><h3>오답 던전</h3><p>내가 틀린 용어만 집중적으로 다시 등장.</p></button>
-  <button class="menu-card" id="openStudy"><span class="tag">전투 없음</span><div class="icon">🏛️</div><h3>지표 연구소</h3><p>도감, 플래시카드, 공식표를 편하게 공부.</p></button>
-  <button class="menu-card" id="openProfile"><span class="tag">성장 기록</span><div class="icon">🏆</div><h3>길드 기록실</h3><p>레벨, 숙련도, 업적과 플레이 기록 확인.</p></button>
+  <button class="menu-card" data-mode="adventure"><span class="tag">추천</span><div class="icon">🗺️</div><h3>모험 던전</h3><p>기초·응용·심화를 섞은 균형 복습.</p></button>
+  <button class="menu-card" data-mode="calculation"><span class="tag">10문제</span><div class="icon">🧮</div><h3>계산 훈련</h3><p>숫자가 매번 바뀌는 계산 문제만 집중 훈련.</p></button>
+  <button class="menu-card" data-mode="quick"><span class="tag">기초</span><div class="icon">⚡</div><h3>속전속결</h3><p>기초 문제 10개로 용어와 뜻을 빠르게 확인.</p></button>
+  <button class="menu-card" data-mode="boss"><span class="tag">고난도</span><div class="icon">🐉</div><h3>보스 레이드</h3><p>응용과 심화 문제로 계산·판단을 집중 훈련.</p></button>
+  <button class="menu-card" id="wrongDungeon"><span class="tag" id="wrongCount">오답 0개</span><div class="icon">🕳️</div><h3>오답 던전</h3><p>틀린 용어만 자동으로 구성한 맞춤 시험.</p></button>
+  <button class="menu-card" id="openStudy"><span class="tag">전투 없음</span><div class="icon">🏛️</div><h3>지표 연구소</h3><p>도감, 플래시카드, 공식표를 천천히 학습.</p></button>
  </div>
 </section>
 
 <section id="battle" class="screen">
  <button class="back" id="quitBattle">← 전투 포기</button>
  <div class="panel">
-  <div class="battle-head">
-   <div class="fighter"><div class="face" id="playerFace">🧙‍♂️</div><b>지표 분석가</b><div class="hp player"><div id="playerHpBar"></div></div><small id="playerHpText"></small></div>
-   <div class="vs">VS</div>
-   <div class="fighter"><div class="face" id="enemyFace">🟢</div><b id="enemyName">이탈 슬라임</b><div class="hp enemy"><div id="enemyHpBar"></div></div><small id="enemyHpText"></small></div>
-  </div>
+  <div class="battle-head"><div class="fighter"><div class="face" id="playerFace">🧙‍♂️</div><b>지표 분석가</b><div class="hp player"><div id="playerHpBar"></div></div><small id="playerHpText"></small></div><div class="vs">VS</div><div class="fighter"><div class="face" id="enemyFace">🟢</div><b id="enemyName">이탈 슬라임</b><div class="hp enemy"><div id="enemyHpBar"></div></div><small id="enemyHpText"></small></div></div>
   <div class="battle-meta"><span>🔥 콤보 <b id="battleCombo">0</b></span><span>문제 <b id="battleNumber">1</b>/<span id="battleTotal">10</span></span><span>점수 <b id="battleScore">0</b></span></div>
   <div class="question-card">
-   <div class="qtype" id="qType"></div>
-   <div class="question" id="qText"></div>
-   <div class="solve-grid" id="solveGrid">
-    <div class="solve-main">
-     <div id="answerArea"></div>
-     <div class="feedback" id="feedback"></div>
-     <button class="btn primary full" id="nextQuestion" style="display:none">다음 공격</button>
-    </div>
-    <aside class="calculator-panel" id="calculatorPanel" hidden aria-label="계산기">
-     <div class="calculator-title"><span>🧮 간단 계산기</span><span id="calcUnitHint">숫자를 계산해 봐</span></div>
-     <div class="calc-history" id="calcHistory"></div>
-     <input class="calc-display" id="calcDisplay" value="" placeholder="0" readonly aria-label="계산 결과">
-     <div class="calc-grid">
-      <button class="calc-key op" data-calc="C">C</button><button class="calc-key op" data-calc="BACK">⌫</button><button class="calc-key op" data-calc="%">%</button><button class="calc-key op" data-calc="÷">÷</button>
-      <button class="calc-key" data-calc="7">7</button><button class="calc-key" data-calc="8">8</button><button class="calc-key" data-calc="9">9</button><button class="calc-key op" data-calc="×">×</button>
-      <button class="calc-key" data-calc="4">4</button><button class="calc-key" data-calc="5">5</button><button class="calc-key" data-calc="6">6</button><button class="calc-key op" data-calc="−">−</button>
-      <button class="calc-key" data-calc="1">1</button><button class="calc-key" data-calc="2">2</button><button class="calc-key" data-calc="3">3</button><button class="calc-key op" data-calc="+">+</button>
-      <button class="calc-key" data-calc="0">0</button><button class="calc-key" data-calc="00">00</button><button class="calc-key" data-calc=".">.</button><button class="calc-key eq" data-calc="=">=</button>
-     </div>
-     <button class="calc-copy" id="copyCalcResult">결과를 정답칸에 넣기</button>
-     <div class="calc-note">퍼센트 계산 예: <b>500 × 4 %</b> → 20<br>문제에서 요구한 단위(원·만원·명·%)를 확인해.</div>
-    </aside>
+   <div class="qtop"><div class="qtype" id="qType"></div><button class="btn outline" id="formulaToggle" hidden>공식 보기</button></div>
+   <div class="question" id="qText"></div><div class="formula-hint" id="formulaHint" hidden></div>
+   <div class="solve-grid" id="solveGrid"><div class="solve-main"><div id="answerArea"></div><div class="feedback" id="feedback"></div><button class="btn primary full" id="nextQuestion" style="display:none">다음 공격</button></div>
+    <aside class="calculator-panel" id="calculatorPanel" hidden aria-label="계산기"><div class="calculator-title"><span>🧮 간단 계산기</span><button class="calc-collapse" id="calcCollapse">접기</button></div><div class="calc-body" id="calcBody"><div class="calc-history" id="calcHistory"></div><input class="calc-display" id="calcDisplay" value="" placeholder="0" readonly aria-label="계산 결과"><div class="calc-grid"><button class="calc-key op" data-calc="C">C</button><button class="calc-key op" data-calc="BACK">⌫</button><button class="calc-key op" data-calc="%">%</button><button class="calc-key op" data-calc="÷">÷</button><button class="calc-key" data-calc="7">7</button><button class="calc-key" data-calc="8">8</button><button class="calc-key" data-calc="9">9</button><button class="calc-key op" data-calc="×">×</button><button class="calc-key" data-calc="4">4</button><button class="calc-key" data-calc="5">5</button><button class="calc-key" data-calc="6">6</button><button class="calc-key op" data-calc="−">−</button><button class="calc-key" data-calc="1">1</button><button class="calc-key" data-calc="2">2</button><button class="calc-key" data-calc="3">3</button><button class="calc-key op" data-calc="+">+</button><button class="calc-key" data-calc="0">0</button><button class="calc-key" data-calc="00">00</button><button class="calc-key" data-calc=".">.</button><button class="calc-key eq" data-calc="=">=</button></div><button class="calc-copy" id="copyCalcResult">결과를 정답칸에 넣기</button><div class="calc-note">예: 500 × 4 % → 20<br>결과를 넣고 아래 단위 버튼을 선택해.</div></div></aside>
    </div>
   </div>
  </div>
 </section>
 
 <section id="study" class="screen">
- <button class="back" data-home>← 길드로 돌아가기</button>
- <div class="section-title"><h2>🏛️ 지표 연구소</h2><span>전투 없이 천천히 학습</span></div>
- <div class="tabs">
-  <button class="tab active" data-study="glossary">용어 도감</button>
-  <button class="tab" data-study="flash">플래시카드</button>
-  <button class="tab" data-study="formula">공식 연구실</button>
- </div>
- <div id="studyGlossary">
-  <div class="study-tools"><input id="termSearch" class="search" aria-label="용어나 뜻 검색" placeholder="용어나 뜻 검색"><select id="categoryFilter" class="search" aria-label="분야 선택" style="width:auto"></select></div>
-  <div class="notice">카드를 누르면 영문 풀네임과 설명이 펼쳐져. 많이 틀린 용어일수록 숙련도 바가 낮게 표시돼.</div>
-  <div id="termCards" class="cards" style="margin-top:12px"></div>
- </div>
- <div id="studyFlash" style="display:none">
-  <div class="flash-wrap"><div class="flashcard" id="flashCard"></div></div>
-  <div class="btnrow"><button class="btn" id="prevFlash">← 이전</button><button class="btn primary" id="flipFlash">뒤집기</button><button class="btn" id="nextFlash">다음 →</button></div>
- </div>
+ <button class="back" data-home>← 길드로 돌아가기</button><div class="section-title"><h2>🏛️ 지표 연구소</h2><span>전투 없이 천천히 학습</span></div>
+ <div class="tabs"><button class="tab active" data-study="glossary">용어 도감</button><button class="tab" data-study="flash">플래시카드</button><button class="tab" data-study="formula">공식 연구실</button></div>
+ <div id="studyGlossary"><div class="study-tools"><input id="termSearch" class="search" aria-label="용어나 뜻 검색" placeholder="용어나 뜻 검색"><select id="categoryFilter" class="search" aria-label="분야 선택" style="width:auto"></select></div><div class="notice">카드를 누르면 영문 풀네임·설명·필기 페이지가 펼쳐져.</div><div id="termCards" class="cards" style="margin-top:12px"></div></div>
+ <div id="studyFlash" style="display:none"><div class="flash-wrap"><div class="flashcard" id="flashCard"></div></div><div class="btnrow"><button class="btn" id="prevFlash">← 이전</button><button class="btn primary" id="flipFlash">뒤집기</button><button class="btn" id="nextFlash">다음 →</button></div></div>
  <div id="studyFormula" style="display:none"><div id="formulaGrid" class="formula-grid"></div></div>
 </section>
 
 <section id="profile" class="screen">
- <button class="back" data-home>← 길드로 돌아가기</button>
- <div class="section-title"><h2>🏆 길드 기록실</h2><span>진행도는 이 기기에 자동 저장</span></div>
- <div class="panel">
-  <div class="hero-grid">
-   <div><h2 style="margin-top:0" id="profileRank">인턴 분석가</h2><p style="color:var(--muted)" id="profileStats"></p></div>
-   <div class="avatar" id="profileAvatar">🧙‍♂️</div>
-  </div>
+ <button class="back" data-home>← 길드로 돌아가기</button><div class="section-title"><h2>🏆 길드 기록실</h2><span>기기 안에 자동 저장</span></div>
+ <div class="panel"><div class="hero-grid"><div><h2 style="margin-top:0" id="profileRank">인턴 분석가</h2><p style="color:var(--muted)" id="profileStats"></p></div><div class="avatar" id="profileAvatar">🧙‍♂️</div></div></div>
+ <div class="section-title"><h2>학습 통계</h2><span>누적 기록</span></div><div class="stat-grid"><div class="stat-card"><b id="statOverall">0%</b><small>전체 정답률</small></div><div class="stat-card"><b id="statCalc">0%</b><small>계산 정답률</small></div><div class="stat-card"><b id="statToday">0</b><small>오늘 풀이</small></div><div class="stat-card"><b id="statStreak">0일</b><small>연속 학습</small></div></div>
+ <div class="section-title"><h2>분야별 정답률</h2><span>약한 분야 확인</span></div><div id="categoryStats" class="category-list"></div>
+ <div class="section-title"><h2>최근 10문제</h2><span>내 답 기록</span></div><div id="recentHistory" class="history-list"></div>
+ <div class="section-title"><h2>업적</h2><span id="achievementCount"></span></div><div id="achievementGrid" class="achievement-grid"></div>
+ <div class="section-title"><h2>숙련도 낮은 용어</h2><span>복습 추천</span></div><div id="weakTerms" class="cards"></div>
+</section>
+
+<section id="settings" class="screen">
+ <button class="back" data-home>← 길드로 돌아가기</button><div class="section-title"><h2>⚙️ 설정·백업</h2><span>학습 환경 맞춤</span></div>
+ <div class="settings-grid">
+  <div class="setting-row"><div><b>소리</b><p>BGM과 정답·오답 효과음</p></div><label class="switch"><input type="checkbox" id="settingSound"><span></span></label></div>
+  <div class="setting-row"><div><b>진동 피드백</b><p>지원되는 휴대폰에서 정답·오답 진동</p></div><label class="switch"><input type="checkbox" id="settingVibration"><span></span></label></div>
+  <div class="setting-row"><div><b>오답 자동 재출제</b><p>틀린 개념을 3~4문제 뒤 다른 형태로 다시 출제</p></div><label class="switch"><input type="checkbox" id="settingRetry"><span></span></label></div>
+  <div class="setting-row"><div><b>문제 글씨 크기</b><p>긴 문제는 화면에 맞춰 자동 줄바꿈</p></div><select class="setting-select" id="settingFont" style="width:150px"><option value="small">작게</option><option value="normal">보통</option><option value="large">크게</option></select></div>
+  <div class="setting-row"><div><b>계산기 기본 상태</b><p>계산 문제 진입 시 접기 여부</p></div><select class="setting-select" id="settingCalc" style="width:150px"><option value="open">펼침</option><option value="collapsed">접힘</option></select></div>
+  <div class="setting-row"><div><b>음량</b><p>브라우저에서 생성되는 오리지널 칩튠 음량</p></div><input id="settingVolume" type="range" min="0" max="100" value="45" style="width:150px"></div>
  </div>
- <div class="section-title"><h2>업적</h2><span id="achievementCount"></span></div>
- <div id="achievementGrid" class="achievement-grid"></div>
- <div class="section-title"><h2>숙련도 낮은 용어</h2><span>복습 추천</span></div>
- <div id="weakTerms" class="cards"></div>
- <button class="btn danger full" id="resetSave" style="margin-top:20px">저장 데이터 초기화</button>
+ <div class="section-title"><h2>데이터 관리</h2><span>JSON 파일로 이동 가능</span></div>
+ <div class="panel"><div class="btnrow"><button class="btn primary" id="exportSave">백업 파일 받기</button><button class="btn" id="importSaveButton">백업 불러오기</button><input type="file" id="importSaveFile" accept="application/json,.json" hidden><button class="btn danger" id="resetSave">모든 기록 초기화</button></div><div id="backupStatus" class="notice" style="margin-top:12px">진행도는 현재 브라우저에만 저장돼.</div></div>
 </section>
 
 <section id="result" class="screen">
- <div class="panel result">
-  <div class="big" id="resultIcon">🏆</div>
-  <h2 id="resultTitle">승리!</h2>
-  <p id="resultDesc" style="color:var(--muted)"></p>
-  <div class="reward"><span class="pill">✨ +<span id="rewardXp">0</span> XP</span><span class="pill">🪙 +<span id="rewardGold">0</span></span></div>
-  <div id="newAchievements"></div>
-  <div class="btnrow" style="justify-content:center;margin-top:20px"><button class="btn primary" id="retryMode">다시 도전</button><button class="btn" data-home>길드로 돌아가기</button></div>
- </div>
+ <div class="panel result"><div class="big" id="resultIcon">🏆</div><h2 id="resultTitle">승리!</h2><p id="resultDesc" style="color:var(--muted)"></p><div id="chapterResult"></div><div class="reward"><span class="pill">✨ +<span id="rewardXp">0</span> XP</span><span class="pill">🪙 +<span id="rewardGold">0</span></span></div><div id="newAchievements"></div><div class="btnrow" style="justify-content:center;margin-top:20px"><button class="btn primary" id="nextChapter" hidden>다음 챕터</button><button class="btn" id="retryMode">다시 도전</button><button class="btn" data-home>길드로 돌아가기</button></div></div>
 </section>
 </div>
-<footer class="site-footer">
-  <b>게임지표 길드 v3.2</b><br>
-  진행도와 소리 설정은 현재 브라우저에만 저장되며 서버로 전송되지 않습니다.
- </footer>
- <div id="soundToast" class="sound-toast">소리가 켜졌어</div>
-
-<noscript>
- <div style="margin:16px;padding:14px;border-radius:12px;background:#7f1d1d;color:white">
-  이 학습 사이트는 자바스크립트가 필요합니다. Chrome 또는 Samsung Internet에서 열어 주세요.
- </div>
-</noscript>
-<script src="app.js?v=32" defer
- onerror="document.getElementById('fatalError').hidden=false"></script>
+<footer class="site-footer"><b>게임지표 길드 v4.0</b><br>진행도·설정은 현재 브라우저에 저장되며 백업 파일로 옮길 수 있습니다.</footer><div id="soundToast" class="sound-toast">알림</div>
+<nav class="bottom-nav" aria-label="하단 메뉴"><button class="nav-btn active" data-nav="home"><span>🏠</span>홈</button><button class="nav-btn" data-nav="study"><span>🏛️</span>학습</button><button class="nav-btn" data-nav="profile"><span>📊</span>기록</button><button class="nav-btn" data-nav="settings"><span>⚙️</span>설정</button></nav>
+<noscript><div style="margin:16px;padding:14px;border-radius:12px;background:#7f1d1d;color:white">이 학습 사이트는 자바스크립트가 필요합니다.</div></noscript>
+<script src="app.js?v=40" defer onerror="document.getElementById('fatalError').hidden=false"></script>
 </body>
 </html>
