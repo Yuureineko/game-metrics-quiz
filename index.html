@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- 게임지표 길드 build v4.1 / external-script -->
+<!-- 게임지표 길드 build v4.2 / external-script -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -67,7 +67,7 @@ button,input,select{font:inherit}button{color:inherit}.app{width:min(1040px,100%
   <div class="hero-grid"><div><div class="pill" style="display:inline-block;margin-bottom:12px">현재 직급: <span id="rankName">인턴 분석가</span></div><h1>외우고,<br>풀고, 다시 맞힌다.</h1><p>전수 검수 문제은행과 자동 재출제로 틀린 개념을 같은 판 안에서 다시 잡는 게임형 학습 사이트야.</p></div><div class="avatar" id="homeAvatar">🧙‍♂️</div></div>
   <div class="quick-stats"><div class="quick-stat"><b id="streakHome">0일</b><small>연속 학습</small></div><div class="quick-stat"><b id="todayHome">0문제</b><small>오늘 풀이</small></div><div class="quick-stat"><b id="overallHome">0%</b><small>전체 정답률</small></div></div>
  </div>
- <div class="notice" style="margin-top:14px">✅ 수업 필기 기준 177문제 · 계산 문제 숫자 랜덤 변형 · 오답은 3~4문제 뒤 변형 재출제.</div>
+ <div class="notice" style="margin-top:14px">✅ 수업 필기 기준 177문제 · 계산 문제 숫자 랜덤 변형 · 보기 없는 주관식 암기 던전 · 오답 변형 재출제.</div>
  <div class="section-title"><h2>챕터 진행</h2><span id="homeProgress">도감 숙련도 0%</span></div>
  <div class="chapter-grid">
   <button class="chapter-card" data-chapter="1"><span class="lock-tag" id="chapterLock1">OPEN</span><div class="chapter-icon">🧭</div><h3>1장 기본 이용자 지표</h3><p>DAU, NRU, PU, NPU, MPU, CU, MCU, UV, TS</p><div class="chapter-status"><span id="chapterStatus1">미도전</span><span id="chapterScore1">0%</span></div><div class="progress"><div id="chapterProgress1"></div></div></button>
@@ -79,6 +79,7 @@ button,input,select{font:inherit}button{color:inherit}.app{width:min(1040px,100%
  <div class="section-title"><h2>자유 훈련</h2><span>필요한 부분만 골라 연습</span></div>
  <div class="menu-grid">
   <button class="menu-card" data-mode="adventure"><span class="tag">추천</span><div class="icon">🗺️</div><h3>모험 던전</h3><p>기초·응용·심화를 섞은 균형 복습.</p></button>
+  <button class="menu-card" data-mode="recall"><span class="tag">주관식 15문제</span><div class="icon">🧠</div><h3>순수 암기 던전</h3><p>보기 없이 설명만 보고 용어·약어를 직접 입력해 진짜 암기를 확인.</p></button>
   <button class="menu-card" data-mode="calculation"><span class="tag">10문제</span><div class="icon">🧮</div><h3>계산 훈련</h3><p>숫자가 매번 바뀌는 계산 문제만 집중 훈련.</p></button>
   <button class="menu-card" data-mode="quick"><span class="tag">기초</span><div class="icon">⚡</div><h3>속전속결</h3><p>기초 문제 10개로 용어와 뜻을 빠르게 확인.</p></button>
   <button class="menu-card" data-mode="boss"><span class="tag">고난도</span><div class="icon">🐉</div><h3>보스 레이드</h3><p>응용과 심화 문제로 계산·판단을 집중 훈련.</p></button>
@@ -138,9 +139,9 @@ button,input,select{font:inherit}button{color:inherit}.app{width:min(1040px,100%
  <div class="panel result"><div class="big" id="resultIcon">🏆</div><h2 id="resultTitle">승리!</h2><p id="resultDesc" style="color:var(--muted)"></p><div id="chapterResult"></div><div class="reward"><span class="pill">✨ +<span id="rewardXp">0</span> XP</span><span class="pill">🪙 +<span id="rewardGold">0</span></span></div><div id="newAchievements"></div><div class="btnrow" style="justify-content:center;margin-top:20px"><button class="btn primary" id="nextChapter" hidden>다음 챕터</button><button class="btn" id="retryMode">다시 도전</button><button class="btn" data-home>길드로 돌아가기</button></div></div>
 </section>
 </div>
-<footer class="site-footer"><b>게임지표 길드 v4.1</b><br>진행도·설정은 현재 브라우저에 저장되며 백업 파일로 옮길 수 있습니다.</footer><div id="soundToast" class="sound-toast">알림</div>
+<footer class="site-footer"><b>게임지표 길드 v4.2</b><br>진행도·설정은 현재 브라우저에 저장되며 백업 파일로 옮길 수 있습니다.</footer><div id="soundToast" class="sound-toast">알림</div>
 <nav class="bottom-nav" aria-label="하단 메뉴"><button class="nav-btn active" data-nav="home"><span>🏠</span>홈</button><button class="nav-btn" data-nav="study"><span>🏛️</span>학습</button><button class="nav-btn" data-nav="profile"><span>📊</span>기록</button><button class="nav-btn" data-nav="settings"><span>⚙️</span>설정</button></nav>
 <noscript><div style="margin:16px;padding:14px;border-radius:12px;background:#7f1d1d;color:white">이 학습 사이트는 자바스크립트가 필요합니다.</div></noscript>
-<script src="app.js?v=41" defer onerror="document.getElementById('fatalError').hidden=false"></script>
+<script src="app.js?v=42" defer onerror="document.getElementById('fatalError').hidden=false"></script>
 </body>
 </html>
